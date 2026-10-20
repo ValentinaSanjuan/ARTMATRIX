@@ -1,0 +1,26 @@
+# Node
+node_modules/
+dist/
+*.local
+.env
+
+# Java / Maven
+target/
+*.class
+.mvn/wrapper/maven-wrapper.jar
+
+# IDEs
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# SO
+.DS_Store
+Thumbs.db
+
+# Registros y temporales
+*.log
+tmp-imagenes/
+.claude/

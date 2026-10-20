@@ -1,0 +1,25 @@
+#!/bin/sh
+# ---------------------------------------------------------------------------
+# Maven Wrapper (Git Bash / Linux / macOS) para ArtMatrix.
+# La primera vez descarga Maven 3.9.9 en ~/.m2/wrapper y luego lo reutiliza.
+# Uso:  ./mvnw spring-boot:run     |    ./mvnw test
+# ---------------------------------------------------------------------------
+set -e
+
+MAVEN_VERSION=3.9.9
+WRAPPER_HOME="$HOME/.m2/wrapper/dists/apache-maven-$MAVEN_VERSION"
+MAVEN_HOME="$WRAPPER_HOME/apache-maven-$MAVEN_VERSION"
+DIST_URL="https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$MAVEN_VERSION/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+BASEDIR="$(cd "$(dirname "$0")" && pwd)"
+
+if [ ! -x "$MAVEN_HOME/bin/mvn" ]; then
+  echo "Descargando Maven $MAVEN_VERSION (solo la primera vez)..."
+  mkdir -p "$WRAPPER_HOME"
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$DIST_URL" | tar -xz -C "$WRAPPER_HOME"
+  else
+    wget -qO- "$DIST_URL" | tar -xz -C "$WRAPPER_HOME"
+  fi
+fi
+
+exec "$MAVEN_HOME/bin/mvn" -f "$BASEDIR/pom.xml" "$@"
