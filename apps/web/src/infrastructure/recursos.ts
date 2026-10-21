@@ -9,8 +9,8 @@ export type AnimoCuri =
 export const imgCuri = (animo: AnimoCuri, ladron = false) => `/img/${ladron ? 'curi-ladron' : 'curi'}/${animo}.png`;
 
 export type IconoBoton =
-  | 'atras' | 'siguiente' | 'menu' | 'completado' | 'reproducir' | 'pausa' | 'detener'
-  | 'configuracion' | 'informacion' | 'ayuda' | 'guardar' | 'cargar' | 'salir' | 'reintentar' | 'aceptar';
+  | 'atras' | 'siguiente' | 'menu' | 'completado' | 'detener'
+  | 'informacion' | 'ayuda' | 'cargar' | 'reintentar' | 'aceptar';
 
 export const imgBoton = (icono: IconoBoton) => `/img/ui/btn-${icono}.png`;
 export const imgFlecha = (dir: 'arriba' | 'abajo' | 'izquierda' | 'derecha') => `/img/ui/flecha-${dir}.png`;

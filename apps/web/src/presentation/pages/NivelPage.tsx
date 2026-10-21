@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { TEMAS_TEORIA, temaDeNivel } from '../../application/contenido/teoria';
 import { AYUDA_CODIGO } from '../../application/contenido/textos';
 import { useEvaluar, useNivel, useNiveles } from '../../application/hooks/useGaleria';
 import { desafiosApi } from '../../application/services/api';
@@ -20,6 +21,7 @@ import { PanelNivelCompletado } from '../components/paneles/PanelNivelCompletado
 import { BotonMadera } from '../components/ui/BotonMadera';
 import { Escena } from '../components/ui/Escena';
 import { Modal } from '../components/ui/Modal';
+import { VistaTema } from '../components/teoria/VistaTema';
 
 const PAUSA_ANIMACION_MS = 260;
 const hora = () => new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
@@ -153,6 +155,8 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
   // ---- Paneles ----
   const [instrucciones, setInstrucciones] = useState(true);
   const [ayuda, setAyuda] = useState(false);
+  const [teoria, setTeoria] = useState(false);
+  const temaNivel = TEMAS_TEORIA.find((t) => t.clave === temaDeNivel(ordenNivel))!;
   const [errorPista, setErrorPista] = useState<string | null>(null);
   const [info, setInfo] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -256,7 +260,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
   useEffect(() => {
     if (esCodigo) return;
     const fn = (e: KeyboardEvent) => {
-      if (instrucciones || ayuda || info || menu || completado) return;
+      if (instrucciones || ayuda || teoria || info || menu || completado) return;
       const mapa: Record<string, [number, number]> = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
       if (mapa[e.key]) { e.preventDefault(); moverCursor(...mapa[e.key]); }
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); accionCursor(); }
@@ -462,7 +466,11 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
 
       {instrucciones && (
         <Modal titulo="INSTRUCCIONES" onCerrar={() => setInstrucciones(false)}
-               acciones={<BotonMadera icono="completado" etiqueta="ENTENDIDO" onClick={() => setInstrucciones(false)} />}>
+               acciones={<>
+                 <BotonMadera icono="informacion" etiqueta="VER TEORÍA"
+                              onClick={() => { setInstrucciones(false); setTeoria(true); }} />
+                 <BotonMadera icono="completado" etiqueta="ENTENDIDO" onClick={() => setInstrucciones(false)} />
+               </>}>
           <div className="fila" style={{ alignItems: 'flex-start', gap: 16 }}>
             <div className="columna" style={{ flex: 1 }}>
               <p className="modal-tablero__texto" style={{ margin: 0 }}>{intro}</p>
@@ -471,6 +479,13 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
             </div>
             <Curi animo="indica" alto={150} ladron={curiMalvado} />
           </div>
+        </Modal>
+      )}
+
+      {teoria && (
+        <Modal titulo={`TEORÍA: ${temaNivel.titulo.toUpperCase()}`} ancho="min(1100px, 96vw)" onCerrar={() => setTeoria(false)}
+               acciones={<BotonMadera icono="completado" etiqueta="VOLVER AL NIVEL" onClick={() => setTeoria(false)} />}>
+          <VistaTema tema={temaNivel} />
         </Modal>
       )}
 

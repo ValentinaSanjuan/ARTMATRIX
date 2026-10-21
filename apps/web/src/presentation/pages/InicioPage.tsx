@@ -28,8 +28,8 @@ export function InicioPage() {
 
   const mensaje = aviso
     ?? (error ? mensajeDeError(error)
-      : !estudiante?.tutorialCompletado ? `¡Hola, ${estudiante?.nombre.split(' ')[0] ?? ''}! Te recomiendo empezar por "Conoce a Curi".`
-      : 'Elige una sala para continuar tu aventura.');
+      : !estudiante?.tutorialCompletado ? `¡Hola, ${estudiante?.nombre.split(' ')[0] ?? ''}! Te recomiendo empezar por "Conoce a Curi". La TEORÍA es opcional.`
+      : 'Elige una sala para continuar tu aventura. Si quieres repasar los conceptos, entra a TEORÍA.');
 
   return (
     <Escena fondo="salon">
@@ -37,12 +37,21 @@ export function InicioPage() {
       <div style={{ marginTop: '2vh' }}><Letrero texto="ARTMATRIX: INICIO" /></div>
 
       <section className="fila" style={{ flex: 1, justifyContent: 'center', gap: '4vw', flexWrap: 'wrap', padding: '0 4vw' }}>
-        <button className="panel--plano fila" style={{ cursor: 'pointer', gap: 14 }} onClick={() => navigate('/tutorial')}>
-          <Curi animo="saludo_izq" alto={130} />
-          <span className="titulo-pixel" style={{ fontSize: 'clamp(16px, 2.2vw, 28px)', lineHeight: 1.6 }}>
-            CONOCE A<br /><span style={{ color: 'var(--oro)' }}>CURI</span>
-          </span>
-        </button>
+        <div className="inicio-accesos">
+          <button className="panel--plano fila" style={{ cursor: 'pointer', gap: 14 }} onClick={() => navigate('/tutorial')}>
+            <Curi animo="saludo_izq" alto={110} />
+            <span className="titulo-pixel" style={{ fontSize: 'clamp(14px, 1.9vw, 24px)', lineHeight: 1.6 }}>
+              CONOCE A<br /><span style={{ color: 'var(--oro)' }}>CURI</span>
+            </span>
+          </button>
+          <button className="panel--plano fila" style={{ cursor: 'pointer', gap: 14 }} onClick={() => navigate('/teoria')}>
+            <Curi animo="piensa" alto={110} flotando={false} />
+            <span className="titulo-pixel" style={{ fontSize: 'clamp(14px, 1.9vw, 24px)', lineHeight: 1.6, textAlign: 'left' }}>
+              <span style={{ color: 'var(--oro)' }}>TEORÍA</span><br />
+              <span style={{ fontSize: '0.55em' }}>(OPCIONAL)</span>
+            </span>
+          </button>
+        </div>
 
         <div className="columna" style={{ gap: 14 }}>
           {isLoading && <span className="cargando">Cargando salas…</span>}

@@ -12,6 +12,7 @@ import { MenuPrincipal } from '../components/paneles/MenuPrincipal';
 import { PanelInformacion } from '../components/paneles/PanelInformacion';
 import { BotonMadera } from '../components/ui/BotonMadera';
 import { Escena } from '../components/ui/Escena';
+import { Modal } from '../components/ui/Modal';
 
 const OBJETIVO: Celda = { fila: 1, columna: 2 };
 
@@ -24,6 +25,7 @@ export function TutorialPage() {
   const [toque, setToque] = useState<Celda | null>(null);
   const [menu, setMenu] = useState(false);
   const [info, setInfo] = useState(false);
+  const [fin, setFin] = useState(false);
 
   const actual = PAGINAS_TUTORIAL[pagina];
   const demo = 'demo' in actual ? actual.demo : undefined;
@@ -41,7 +43,7 @@ export function TutorialPage() {
       onSettled: () => {
         actualizarEstudiante({ tutorialCompletado: true });
         guardarPaginaTutorial(0);
-        navigate('/inicio');
+        setFin(true); // la teoría es opcional: el estudiante elige si la ve antes de jugar
       },
     });
   };
@@ -97,6 +99,20 @@ export function TutorialPage() {
       </footer>
       {menu && <MenuPrincipal onCerrar={() => setMenu(false)} onInformacion={() => setInfo(true)} />}
       {info && <PanelInformacion onCerrar={() => setInfo(false)} />}
+      {fin && (
+        <Modal titulo="¿REPASAMOS LA TEORÍA?"
+               acciones={<>
+                 <BotonMadera icono="informacion" etiqueta="VER TEORÍA" onClick={() => navigate('/teoria')} />
+                 <BotonMadera icono="siguiente" etiqueta="IR A LAS SALAS" onClick={() => navigate('/inicio')} />
+               </>}>
+          <div className="fila" style={{ alignItems: 'center', gap: 16 }}>
+            <p className="modal-tablero__texto" style={{ margin: 0, flex: 1 }}>
+              {'Antes de empezar puedes leer la TEORÍA: matrices, índices, recorridos y condiciones en Java, con ejemplos.\n\nEs opcional. También la encuentras en el inicio y en el menú cuando la necesites.'}
+            </p>
+            <Curi animo="piensa" alto={140} />
+          </div>
+        </Modal>
+      )}
     </Escena>
   );
 }

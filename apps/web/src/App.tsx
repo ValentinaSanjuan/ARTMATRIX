@@ -7,6 +7,7 @@ import { LoginPage } from './presentation/pages/LoginPage';
 import { NivelPage } from './presentation/pages/NivelPage';
 import { PerfilPage } from './presentation/pages/PerfilPage';
 import { RegistroPage } from './presentation/pages/RegistroPage';
+import { TeoriaPage } from './presentation/pages/TeoriaPage';
 import { TutorialPage } from './presentation/pages/TutorialPage';
 
 function Privada({ children }: { children: ReactNode }) {
@@ -31,6 +32,7 @@ export default function App() {
       <Route path="/registro" element={<RegistroPage />} />
       <Route path="/inicio" element={<Privada><InicioPage /></Privada>} />
       <Route path="/tutorial" element={<Privada><TutorialPage /></Privada>} />
+      <Route path="/teoria" element={<Privada><TeoriaPage /></Privada>} />
       <Route path="/nivel/:id" element={<Privada><NivelPage /></Privada>} />
       <Route path="/perfil" element={<Privada><PerfilPage /></Privada>} />
       <Route path="*" element={<Navigate to="/inicio" replace />} />

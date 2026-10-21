@@ -24,3 +24,5 @@ Thumbs.db
 *.log
 tmp-imagenes/
 .claude/
+_eliminados/
+_herramientas/

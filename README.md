@@ -7,9 +7,11 @@ Universidad de la Amazonia — Proyectos Software 2026-2 — Binary Girls.
 ARTMATRIX/
 ├── apps/web/                     Frontend  React + TypeScript + Vite (+ intérprete Java limitado)
 ├── services/api/artmatrix-api/   Backend   Spring Boot 3.3 + Java 17 + MySQL 8.0 (Flyway)
-├── infra/                        Script SQL y docker-compose de MySQL
-├── scripts/                      Utilidades (copiar fondos de ImagenesArtMatrix)
-└── docs/arquitectura.md          Relación con el documento de planificación
+├── infra/mysql/                  Script para crear la base de datos y el usuario
+├── scripts/                      crear-base-datos.bat
+├── docs/arquitectura.md          Relación con el documento de planificación
+├── ARRANCAR-ARTMATRIX.bat        Arranca backend + frontend y abre el navegador
+└── render.yaml                   Despliegue del backend en Render
 ```
 
 ## Requisitos
@@ -17,13 +19,17 @@ ARTMATRIX/
 
 ## Primera vez
 
-1. **Base de datos** — abre MySQL Workbench como `root` y ejecuta
-   `infra/mysql/crear-base-datos.sql` (crea la base `artmatrix` y el usuario `artmatrix`/`artmatrix`).
+1. **Base de datos** — doble clic en `scripts/crear-base-datos.bat` (pide la contraseña de root),
+   o ejecuta `infra/mysql/crear-base-datos.sql` en MySQL Workbench.
+   Crea la base `artmatrix` y el usuario `artmatrix`/`artmatrix`.
    Las tablas y los datos de los 5 niveles se crean solos al arrancar el backend (Flyway).
-   *Si prefieres usar tu usuario root:* define las variables `DB_USUARIO` y `DB_CLAVE` antes de arrancar.
-2. **Fondos** — doble clic en `scripts/copiar-imagenes.bat` (copia `fondo1` y `fondo3` del Escritorio).
 
-## Ejecutar (dos terminales o doble clic en los .bat)
+## Ejecutar en tu PC
+
+Doble clic en **`ARRANCAR-ARTMATRIX.bat`** (desde el Explorador de archivos). Abre dos ventanas
+(backend y frontend) y luego el navegador en **http://localhost:5173**. No cierres esas ventanas mientras juegas.
+
+O a mano, en dos terminales:
 
 ```powershell
 # Backend → http://localhost:8080
@@ -36,15 +42,33 @@ npm install
 npm run dev
 ```
 
-O simplemente: `iniciar-backend.bat` y `iniciar-frontend.bat`.
+## Contenido
+
+- **Tutorial** con Curi (5 pasos).
+- **Teoría (opcional)**: matrices, índices, recorridos por filas y columnas, condiciones con `%`,
+  recorrido perimetral, dos condiciones a la vez y errores comunes. Se abre desde el inicio, el menú,
+  al terminar el tutorial o con **VER TEORÍA** en las instrucciones de cada nivel.
+- **5 niveles**, todos disponibles desde el inicio.
 
 ## Pruebas
 
 ```powershell
 cd services/api/artmatrix-api; .\mvnw.cmd test      # reglas del dominio
-cd apps/web; npm run test:interprete               # intérprete Java (19 casos)
+cd apps/web; npm run test:interprete               # intérprete Java
 cd apps/web; npm run build                         # verificación de tipos + build
 ```
+
+## Publicar en la web
+
+| Parte | Servicio | Configuración |
+|---|---|---|
+| Base de datos | Aiven (MySQL, plan Free) | Copia host, puerto, usuario y contraseña |
+| Backend | Render (New → Blueprint, usa `render.yaml`) | Variables `DB_URL`, `DB_USUARIO`, `DB_CLAVE`, `CORS_ORIGENES` |
+| Frontend | Vercel (Root Directory `apps/web`) | Variable `VITE_API_URL` = dirección del backend en Render |
+
+- `DB_URL` = `jdbc:mysql://HOST:PUERTO/defaultdb?sslMode=REQUIRED`
+- `CORS_ORIGENES` = la dirección que te da Vercel (por ejemplo `https://artmatrix.vercel.app`)
+- `JWT_SECRETO` lo genera Render automáticamente.
 
 ## Lenguaje del editor
 

@@ -2,7 +2,6 @@ package co.edu.uniamazonia.artmatrix.application.service;
 
 import co.edu.uniamazonia.artmatrix.application.model.ConfiguracionDesafio;
 import co.edu.uniamazonia.artmatrix.application.model.Vistas;
-import co.edu.uniamazonia.artmatrix.domain.exception.NivelBloqueadoException;
 import co.edu.uniamazonia.artmatrix.domain.exception.RecursoNoEncontradoException;
 import co.edu.uniamazonia.artmatrix.domain.model.EstadoNivel;
 import co.edu.uniamazonia.artmatrix.domain.rule.ReglaDesbloqueo;
@@ -58,9 +57,6 @@ public class NivelDesafioService {
         List<NivelEntity> todos = niveles.findAllByOrderByOrdenAsc();
         ProgresoNivelEntity progreso = progresos.findByIdEstudianteAndNivel_Id(idEstudiante, idNivel).orElse(null);
         Vistas.NivelResumen resumen = resumen(nivel, progreso, todos);
-        if (EstadoNivel.BLOQUEADO.name().equals(resumen.estado())) {
-            throw new NivelBloqueadoException(resumen.requisito());
-        }
         Set<Integer> superados = desafiosSuperados(idEstudiante);
         List<Vistas.Desafio> lista = nivel.getDesafios().stream()
                 .map(d -> vistaDesafio(d, superados.contains(d.getId())))

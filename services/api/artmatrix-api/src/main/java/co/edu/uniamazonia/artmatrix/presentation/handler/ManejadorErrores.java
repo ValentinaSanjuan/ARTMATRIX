@@ -1,6 +1,5 @@
 package co.edu.uniamazonia.artmatrix.presentation.handler;
 
-import co.edu.uniamazonia.artmatrix.domain.exception.NivelBloqueadoException;
 import co.edu.uniamazonia.artmatrix.domain.exception.RecursoNoEncontradoException;
 import co.edu.uniamazonia.artmatrix.domain.exception.ReglaNegocioException;
 import org.springframework.http.HttpStatus;
@@ -26,11 +25,6 @@ public class ManejadorErrores {
     @ExceptionHandler(BadCredentialsException.class)
     public ProblemDetail credenciales(BadCredentialsException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
-    }
-
-    @ExceptionHandler(NivelBloqueadoException.class)
-    public ProblemDetail bloqueado(NivelBloqueadoException e) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
     }
 
     @ExceptionHandler(RecursoNoEncontradoException.class)

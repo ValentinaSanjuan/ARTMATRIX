@@ -64,7 +64,7 @@ Columnas añadidas (marcadas con `[+]` en `V1__init.sql`) y por qué:
 | RF-01 Registrar estudiante | `POST /api/auth/registro` · `RegistroPage` |
 | RF-02 Iniciar sesión | `POST /api/auth/login` · `LoginPage` |
 | RF-03 Tutorial | `TutorialPage` · `POST /api/progreso/tutorial` |
-| RF-04 Avanzar nivel | `GET /api/niveles` · `ReglaDesbloqueo` · `InicioPage` |
+| RF-04 Avanzar nivel | `GET /api/niveles` · `ReglaDesbloqueo` (todas las salas abiertas) · `InicioPage` |
 | RF-05 Representar matrices | `TableroGaleria` (índices, obras, celdas vacías) |
 | RF-06 Manipular obras | Desafíos `UBICAR`: arrastrar y soltar o flechas + COLOCAR AQUÍ |
 | RF-07 Recorrer matrices | Desafíos `RECORRIDO`: selección en orden, resaltado y señal del paso erróneo |
@@ -75,6 +75,7 @@ Columnas añadidas (marcadas con `[+]` en `V1__init.sql`) y por qué:
 | RF-12 Recompensas | `CalculadoraRecompensas`, `estudiante_recompensa`, panel de nivel completado |
 | RF-13 Seguimiento del progreso | `GET /api/progreso` · `PerfilPage` |
 | RF-14 Curi | `Curi.tsx`, `mensaje_curi`, `OrientacionService` |
+| Teoría (opcional) | `TeoriaPage` (`/teoria`) · `contenido/teoria.ts` · botón VER TEORÍA en las instrucciones de cada nivel |
 
 ## 5. Contenido de los niveles (Fig. 11–22)
 

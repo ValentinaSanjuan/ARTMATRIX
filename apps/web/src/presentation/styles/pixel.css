@@ -746,3 +746,94 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 .perfil .insignia { border-radius: 14px; padding: 6px; font-size: 16px; line-height: 1.05; }
 .contacto-linea { display: flex; align-items: center; gap: 10px; font-size: 21px; word-break: break-all; }
 .contacto-linea i { font-style: normal; width: 30px; height: 30px; border-radius: 50%; background: rgba(0,0,0,.35); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* ---------- Teoría (apartado opcional) ---------- */
+.teoria {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: clamp(12px, 2vw, 24px);
+  padding: 70px clamp(12px, 3vw, 40px) 4px;
+}
+.teoria__temas {
+  width: clamp(200px, 20vw, 260px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+}
+.teoria__temas-titulo { font-size: 15px; color: var(--oro); text-shadow: 2px 2px 0 #000; margin-bottom: 4px; }
+.teoria__tema { flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; line-height: 1.5; }
+.teoria__tema--activo {
+  background: linear-gradient(#58c35f, #34913c);
+  border-color: #1f4d22;
+  box-shadow: inset 0 3px 0 #8be28f, inset 0 -4px 0 #24702b, 3px 4px 0 rgba(0,0,0,.5);
+}
+.teoria__nivel { font-size: 8px; color: var(--oro); }
+.teoria__tema--activo .teoria__nivel { color: #fff6c9; }
+.teoria__contenido {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: #6a4122;
+  border: 10px solid #7d7d7d;
+  border-image: linear-gradient(#9a9a9a, #5d5d5d) 1;
+  box-shadow: 0 0 0 4px #1d1d1d, 8px 10px 0 rgba(0,0,0,.6);
+  border-radius: 4px;
+  padding: 14px 20px 16px;
+  animation: teoria-entrar .25s ease-out;
+}
+@keyframes teoria-entrar { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.teoria__cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.teoria__titulo {
+  font-size: clamp(12px, 1.3vw, 16px);
+  margin: 0;
+  padding: 8px 12px;
+  background: linear-gradient(#7a7a7a, #4d4d4d);
+  border: 4px solid #222;
+  text-shadow: 2px 2px 0 #000;
+}
+.teoria__contador { opacity: .8; }
+.teoria__cuerpo { flex: 1; min-height: 0; display: flex; gap: 20px; overflow: auto; }
+.teoria__explicacion { flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.teoria__texto {
+  margin: 0;
+  font-size: clamp(20px, 1.7vw, 25px);
+  line-height: 1.2;
+  white-space: pre-line;
+  text-shadow: 1px 1px 0 #000;
+}
+.teoria__codigo {
+  margin: 0;
+  background: #08111d;
+  border: 2px solid var(--noche-borde);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--fuente-codigo);
+  font-size: clamp(11.5px, 0.95vw, 13.5px);
+  line-height: 1.5;
+  color: #d6e6f7;
+  overflow: auto;
+  white-space: pre;
+}
+.teoria__demo { flex: 0.8; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.teoria__leyenda { margin: 0; text-align: center; color: var(--oro); text-shadow: 1px 1px 0 #000; }
+.teoria__consejo { display: flex; align-items: flex-end; gap: 14px; margin-top: auto; }
+.teoria__burbuja { font-size: 20px; margin: 0 0 6px; }
+
+/* Tarjeta de teoría en la pantalla de inicio */
+.inicio-accesos { display: flex; flex-direction: column; gap: 14px; }
+
+@media (max-width: 1100px) {
+  .teoria__cuerpo { flex-direction: column; }
+  .teoria__demo { flex: none; }
+}
+@media (max-width: 760px) {
+  .teoria { flex-direction: column; overflow: auto; }
+  .teoria__temas { width: auto; flex-direction: row; flex-wrap: wrap; overflow: visible; }
+  .teoria__tema { flex: 1 1 140px; }
+  .teoria__contenido { flex: none; }
+}

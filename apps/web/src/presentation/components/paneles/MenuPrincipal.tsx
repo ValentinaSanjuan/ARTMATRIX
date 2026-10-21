@@ -37,6 +37,7 @@ export function MenuPrincipal({ onCerrar, onInformacion }: Props) {
         <button className="boton-tablon" onClick={() => ir('/inicio')}>INICIO</button>
         <button className="boton-tablon" onClick={() => ir('/perfil')}>PERFIL</button>
         <button className="boton-tablon" onClick={() => ir('/tutorial')}>TUTORIAL</button>
+        <button className="boton-tablon" onClick={() => ir('/teoria')}>TEORÍA</button>
         <button className="boton-tablon" onClick={() => { cerrarSesion(); ir('/login'); }}>SALIR</button>
         <span className="titulo-pixel" style={{ fontSize: 11, marginTop: 6 }}>SELECCIÓN DE NIVEL</span>
         {niveles?.map((n) => (
