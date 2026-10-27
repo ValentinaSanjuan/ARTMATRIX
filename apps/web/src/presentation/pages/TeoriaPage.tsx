@@ -14,9 +14,10 @@ import { VistaTema } from '../components/teoria/VistaTema';
  */
 export function TeoriaPage() {
   const navigate = useNavigate();
-  const [params] = useSearchParams();
-  const inicial = Math.max(0, TEMAS_TEORIA.findIndex((t) => t.clave === params.get('tema')));
-  const [indice, setIndice] = useState(inicial);
+  // El tema actual vive en la URL (?tema=filas) para que "atrás" y recargar funcionen.
+  const [params, setParams] = useSearchParams();
+  const indice = Math.max(0, TEMAS_TEORIA.findIndex((t) => t.clave === params.get('tema')));
+  const setIndice = (i: number) => setParams({ tema: TEMAS_TEORIA[i].clave });
   const [menu, setMenu] = useState(false);
   const [info, setInfo] = useState(false);
 

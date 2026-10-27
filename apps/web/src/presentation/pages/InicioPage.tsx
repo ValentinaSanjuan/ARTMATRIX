@@ -34,9 +34,9 @@ export function InicioPage() {
   return (
     <Escena fondo="salon">
       <div className="boton-menu"><BotonMadera icono="menu" etiqueta="MENÚ" onClick={() => setMenu(true)} /></div>
-      <div style={{ marginTop: '2vh' }}><Letrero texto="ARTMATRIX: INICIO" /></div>
+      <div className="inicio-letrero"><Letrero texto="ARTMATRIX: INICIO" /></div>
 
-      <section className="fila" style={{ flex: 1, justifyContent: 'center', gap: '4vw', flexWrap: 'wrap', padding: '0 4vw' }}>
+      <section className="inicio-cuerpo">
         <div className="inicio-accesos">
           <button className="panel--plano fila" style={{ cursor: 'pointer', gap: 14 }} onClick={() => navigate('/tutorial')}>
             <Curi animo="saludo_izq" alto={110} />
@@ -55,7 +55,7 @@ export function InicioPage() {
 
         <div className="columna" style={{ gap: 14 }}>
           {isLoading && <span className="cargando">Cargando salas…</span>}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(170px, 1fr))', gap: 14 }}>
+          <div className="inicio-niveles">
             {niveles?.map((n) => (
               <button
                 key={n.id}
@@ -76,7 +76,7 @@ export function InicioPage() {
         </div>
       </section>
 
-      <div style={{ padding: '0 4vw 8px' }}>
+      <div className="inicio-dialogo">
         <DialogoCuri mensaje={mensaje} animo={aviso ? 'pregunta' : 'feliz'} alto={90} tono={aviso || error ? 'error' : 'normal'} />
       </div>
       <footer className="barra-inferior">

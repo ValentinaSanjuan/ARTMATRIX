@@ -60,7 +60,7 @@ export function TutorialPage() {
   return (
     <Escena fondo="salon">
       <div className="boton-menu"><BotonMadera icono="menu" etiqueta="MENÚ" onClick={() => setMenu(true)} /></div>
-      <section className="fila" style={{ flex: 1, justifyContent: 'center', gap: '3vw', padding: '70px 4vw 0', flexWrap: 'wrap' }}>
+      <section className="fila tutorial-cuerpo" style={{ flex: 1, justifyContent: 'center', gap: '3vw', padding: '70px 4vw 0', flexWrap: 'wrap' }}>
         <div className="modal-tablero" style={{ width: 'min(560px, 92vw)', maxHeight: '70vh' }}>
           <h2 className="modal-tablero__titulo" style={{ fontSize: 13 }}>{actual.titulo.toUpperCase()}</h2>
           <p className="modal-tablero__texto">{texto}</p>
@@ -91,7 +91,7 @@ export function TutorialPage() {
         </div>
       </section>
       <footer className="barra-inferior">
-        <BotonMadera icono="atras" etiqueta="ATRÁS" disabled={pagina === 0} onClick={() => irA(pagina - 1)} />
+        <BotonMadera icono="atras" etiqueta={pagina === 0 ? 'SALAS' : 'ATRÁS'} onClick={() => (pagina === 0 ? navigate('/inicio') : irA(pagina - 1))} />
         <BotonMadera icono="informacion" etiqueta="INFORMACIÓN" onClick={() => setInfo(true)} />
         <span className="barra-inferior__espacio" />
         <BotonMadera icono="siguiente" etiqueta={pagina === PAGINAS_TUTORIAL.length - 1 ? 'COMENZAR' : 'SIGUIENTE'}

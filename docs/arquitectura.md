@@ -77,14 +77,16 @@ Columnas añadidas (marcadas con `[+]` en `V1__init.sql`) y por qué:
 | RF-14 Curi | `Curi.tsx`, `mensaje_curi`, `OrientacionService` |
 | Teoría (opcional) | `TeoriaPage` (`/teoria`) · `contenido/teoria.ts` · botón VER TEORÍA en las instrucciones de cada nivel |
 
-## 5. Contenido de los niveles (Fig. 11–22)
+## 5. Contenido de los niveles (Fig. 11–22, ampliado)
 
-| Nivel | Desafíos | Tipo |
+| Nivel | Misiones | Tipo |
 |---|---|---|
-| 1 Sala de Iniciación | Ubica *La noche estrellada* en `[2][3]`; *El grito* en `[4][1]` | UBICAR |
-| 2 Llenado de espacios | Fila 1 de la col. 0 a la 5; columna 3 de arriba abajo | RECORRIDO |
-| 3 Condiciones pares | Toda la fila 2 con un `for`; columna 4 solo en filas pares | CÓDIGO |
-| 4 Recorrido perimetral | Solo los bordes de la estantería 4×6 | CÓDIGO |
-| 5 Reto de los múltiplos | Fila y columna múltiplos de 2 | CÓDIGO |
+| 1 Sala de Iniciación | *La noche estrellada* en `[2][3]`; *El grito* en `[4][1]`; *El beso* en la primera fila y última columna | UBICAR |
+| 2 Llenado de espacios | Fila 1; columna 3; fila 5 de derecha a izquierda; diagonal principal | RECORRIDO |
+| 3 Condiciones pares | Fila 2 con un `for`; columna 4 en filas pares; columnas impares de la fila 1 | CÓDIGO (con código inicial) |
+| 4 Recorrido perimetral | Bordes; cuatro esquinas; solo el interior | CÓDIGO (editor vacío) |
+| 5 Exposición Maestra | Múltiplos de 2; serpiente; diagonales cruzadas; ronda en sentido horario; llenar huecos leyendo la matriz | CÓDIGO (editor vacío, máximo 1–2 pistas) |
+
+Cada nivel tiene su propio fondo (`public/img/fondos/nivel1..5.jpg`), generado con Gemini en el mismo estilo pixel art.
 
 Estrellas: 3 sin pistas ni errores; 2 con hasta 1 pista y 2 errores; 1 en otro caso.

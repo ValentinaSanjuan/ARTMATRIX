@@ -43,10 +43,13 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   flex-direction: column;
   overflow: hidden;
 }
-.escena--exterior { background-image: url('/img/fondos/exterior.jpg'), url('/img/fondos/salon.jpg'); }
+.escena--exterior { background-image: url('/img/fondos/exterior.jpg'); background-position: center bottom; }
 .escena--salon    { background-image: url('/img/fondos/salon.jpg'); }
-.escena--sala     { background-image: url('/img/fondos/sala.jpg'), url('/img/fondos/salon.jpg'); }
-.escena--casa     { background-image: url('/img/fondos/casa-galeria.jpg'); background-position: left center; }
+.escena--nivel1   { background-image: url('/img/fondos/nivel1.jpg'), url('/img/fondos/salon.jpg'); }
+.escena--nivel2   { background-image: url('/img/fondos/nivel2.jpg'), url('/img/fondos/salon.jpg'); }
+.escena--nivel3   { background-image: url('/img/fondos/nivel3.jpg'), url('/img/fondos/salon.jpg'); }
+.escena--nivel4   { background-image: url('/img/fondos/nivel4.jpg'), url('/img/fondos/salon.jpg'); }
+.escena--nivel5   { background-image: url('/img/fondos/nivel5.jpg'), url('/img/fondos/salon.jpg'); }
 .escena--nocturna::before {
   content: '';
   position: absolute;
@@ -58,8 +61,8 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
    el fondo (se pinta debajo del contenido), así tablero y paneles siguen legibles. */
 .escena--oscura {
   box-shadow:
-    inset 0 0 240px 90px rgba(0, 0, 0, .85),
-    inset 0 0 0 100vmax rgba(6, 4, 18, .55);
+    inset 0 0 220px 70px rgba(0, 0, 0, .75),
+    inset 0 0 0 100vmax rgba(6, 4, 18, .3);
 }
 .escena > * { position: relative; }
 
@@ -836,4 +839,142 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   .teoria__temas { width: auto; flex-direction: row; flex-wrap: wrap; overflow: visible; }
   .teoria__tema { flex: 1 1 140px; }
   .teoria__contenido { flex: none; }
+}
+
+/* ---------- Inicio ---------- */
+.inicio-letrero { margin-top: 2vh; }
+.inicio-cuerpo {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4vw;
+  flex-wrap: wrap;
+  padding: 0 4vw;
+}
+.inicio-niveles { display: grid; grid-template-columns: repeat(2, minmax(150px, 1fr)); gap: 14px; }
+.inicio-dialogo { padding: 0 4vw 8px; }
+
+/* ---------- Selector de misiones (encabezado del nivel) ---------- */
+.selector-misiones { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.selector-misiones__boton {
+  min-width: 30px;
+  height: 28px;
+  padding: 0 6px;
+  font-family: var(--fuente-titulo);
+  font-size: 11px;
+  color: var(--crema);
+  background: linear-gradient(#7a4520, #5a3012);
+  border: 2px solid #1a0f07;
+  border-radius: 6px;
+  box-shadow: inset 0 2px 0 #a0612f;
+  cursor: pointer;
+}
+.selector-misiones__boton--hecha { color: var(--oro); }
+.selector-misiones__boton--actual {
+  background: linear-gradient(#58c35f, #34913c);
+  box-shadow: inset 0 2px 0 #8be28f, 0 0 0 2px var(--oro);
+  color: #fff;
+}
+.selector-misiones__boton:disabled { opacity: .5; cursor: progress; }
+.selector-misiones__boton:focus-visible,
+.boton-madera:focus-visible,
+.boton-tablon:focus-visible,
+.enlace-pixel:focus-visible { outline: 3px solid var(--oro); outline-offset: 3px; }
+
+/* ---------- Avisos y Curi en login/registro ---------- */
+.aviso-pixel {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.1;
+  color: #fff6c9;
+  background: rgba(20, 30, 60, .8);
+  border: 2px solid #0a1022;
+  padding: 6px 10px;
+  text-align: center;
+}
+.curi-login { position: absolute; left: 6vw; bottom: 3vh; }
+
+/* ---------- Panel de misión superada ---------- */
+.panel-completado__cuerpo { gap: 20px; align-items: center; }
+.panel-completado__acciones { gap: 24px; flex-wrap: wrap; justify-content: center; }
+
+/* ==========================================================================
+   CELULARES Y TABLETAS PEQUEÑAS
+   La página se desplaza verticalmente, el tablero va arriba y los controles
+   o el editor debajo; la barra inferior queda fija y compacta.
+   ========================================================================== */
+@media (max-width: 760px) {
+  html, body, #root { height: 100dvh; }
+  .escena { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+  .escena--oscura { box-shadow: inset 0 0 0 100vmax rgba(6, 4, 18, .6); }
+
+  .boton-menu { top: 6px; left: 6px; }
+  .boton-madera img { height: calc(var(--alto, 46px) * .78); }
+  .boton-madera span { font-size: 7px; }
+
+  .barra-inferior {
+    position: sticky;
+    bottom: 0;
+    z-index: 6;
+    margin-top: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 10px;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.85));
+  }
+  .barra-inferior__espacio { display: none; }
+
+  .letrero { width: min(520px, 78vw); }
+  .inicio-letrero { margin: 52px 0 0; }
+  .inicio-cuerpo { flex-direction: column; gap: 16px; padding: 12px; flex: none; }
+  .inicio-accesos { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .inicio-accesos .panel--plano { padding: 10px 12px; }
+  .inicio-accesos .curi { height: 70px !important; }
+  .inicio-niveles { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 10px; }
+  .inicio-niveles .boton-tablon { font-size: 11px; padding: 10px; }
+  .inicio-dialogo { padding: 0 10px 8px; }
+
+  .curi-login { position: static; display: flex; justify-content: center; margin: 14px 0 70px; }
+  .curi-login .curi { height: 90px !important; }
+  .marco-metal { padding: 18px 14px; }
+
+  .burbuja { font-size: 19px; padding: 8px 10px; }
+  .dialogo-curi .curi { height: 64px !important; }
+
+  /* Nivel */
+  .encabezado-nivel { padding: 6px 8px 0; gap: 8px; }
+  .encabezado-nivel__texto { padding: 6px 8px; }
+  .encabezado-nivel__titulo { font-size: 11px; }
+  .encabezado-nivel__instrucciones { font-size: 18px; }
+  .nivel-cuerpo { flex: none; flex-direction: column; padding: 6px 8px 0; gap: 10px; }
+  .nivel-cuerpo__principal, .nivel-zona { flex: none; }
+  .zona-tablero { flex-direction: column; gap: 12px; overflow: visible; padding: 4px 0; }
+  .controles-nivel { width: 100%; gap: 10px; }
+  .panel-codigo--lateral { width: 100%; margin-bottom: 8px; overflow: visible; }
+  .panel-codigo__editor { min-height: 260px; height: 46vh; flex: none; }
+  .panel-codigo__inferior { flex-direction: column; }
+  .panel-codigo__bloque--consola .consola { min-height: 120px; max-height: 200px; }
+
+  /* Modales */
+  .modal-fondo { padding: 10px; align-items: flex-start; overflow-y: auto; }
+  .modal-tablero { padding: 16px 14px 18px; border-width: 8px; max-height: none; }
+  .modal-tablero__titulo { font-size: 13px; margin: -6px 0 14px; }
+  .modal-tablero__texto { font-size: 11px; }
+  .modal-tablero .fila { flex-wrap: wrap; }
+  .modal-tablero .fila > .columna { flex: 1 1 100% !important; min-width: 0; }
+  .modal-tablero .fila > .curi { order: -1; height: 84px !important; margin: 0 auto; }
+  .panel-completado__cuerpo { flex-direction: column; text-align: center; }
+  .panel-completado__acciones { gap: 12px; }
+
+  /* Tutorial */
+  .tutorial-cuerpo { padding-top: 56px !important; }
+}
+
+/* Pantallas muy bajas en horizontal (celular girado) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .escena { overflow-y: auto; }
+  .letrero { width: min(420px, 50vw); }
+  .boton-madera img { height: calc(var(--alto, 46px) * .7); }
 }

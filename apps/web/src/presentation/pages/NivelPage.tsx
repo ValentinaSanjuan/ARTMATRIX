@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { TEMAS_TEORIA, temaDeNivel } from '../../application/contenido/teoria';
 import { AYUDA_CODIGO } from '../../application/contenido/textos';
 import { useEvaluar, useNivel, useNiveles } from '../../application/hooks/useGaleria';
@@ -39,12 +39,16 @@ function useTamanoCelda(ref: RefObject<HTMLElement>, filas: number, columnas: nu
     if (!el) return;
     const calcular = () => {
       const { width, height } = el.getBoundingClientRect();
+      const movil = window.innerWidth <= 760;
       // índices (22px arriba, 28px a cada lado), huecos de 4px, marco y relleno (~44px)
-      const alto = (height - 80 - 5 * filas) / filas;
-      // en los niveles sin código, las flechas comparten la fila con el tablero
-      const reserva = conControles ? Math.min(300, Math.max(210, window.innerWidth * 0.24)) + Math.min(80, Math.max(40, window.innerWidth * 0.05)) : 0;
-      const ancho = (width - reserva - 96 - 5 * (columnas + 2)) / columnas;
-      setTam(Math.max(18, Math.min(84, Math.floor(Math.min(alto, ancho)))));
+      // En celular la página se desplaza: el alto lo limita la ventana, no el contenedor.
+      const altoDisponible = movil ? window.innerHeight * 0.55 : height;
+      const alto = (altoDisponible - 80 - 5 * filas) / filas;
+      // en los niveles sin código y en pantallas anchas, las flechas comparten la fila con el tablero
+      const reserva = conControles && !movil
+        ? Math.min(300, Math.max(210, window.innerWidth * 0.24)) + Math.min(80, Math.max(40, window.innerWidth * 0.05)) : 0;
+      const ancho = (width - reserva - (movil ? 70 : 96) - 5 * (columnas + 2)) / columnas;
+      setTam(Math.max(movil ? 22 : 18, Math.min(84, Math.floor(Math.min(alto, ancho)))));
     };
     calcular();
     const obs = new ResizeObserver(calcular);
@@ -62,16 +66,23 @@ export function NivelPage() {
   const navigate = useNavigate();
   const { data, error, isLoading } = useNivel(idNivel);
   const { data: niveles } = useNiveles();
-  const [indice, setIndice] = useState<number | null>(null);
+  // La misión actual vive en la URL (?mision=2): así el botón "atrás" del navegador
+  // y recargar la página mantienen al estudiante en la misma misión.
+  const [params, setParams] = useSearchParams();
+  const total = data?.desafios.length ?? 0;
+  const pedida = Number(params.get('mision'));
+  const pendiente = data ? data.desafios.findIndex((d) => !d.superado) : -1;
+  const indice: number | null = !data ? null
+    : pedida >= 1 && pedida <= total ? pedida - 1
+    : pendiente >= 0 ? pendiente : 0;
+  const irAMision = (i: number, reemplazar = false) => setParams({ mision: String(i + 1) }, { replace: reemplazar });
 
+  // Sin ?mision en la URL se abre la primera misión pendiente y se fija en la URL,
+  // para que no cambie sola cuando el progreso se actualiza.
   useEffect(() => {
-    if (data && indice === null) {
-      const pendiente = data.desafios.findIndex((d) => !d.superado);
-      setIndice(pendiente >= 0 ? pendiente : 0);
-    }
-  }, [data, indice]);
-
-  useEffect(() => setIndice(null), [idNivel]);
+    if (data && indice !== null && !(pedida >= 1 && pedida <= total)) irAMision(indice, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, pedida, total]);
 
   if (isLoading || (data && indice === null)) {
     return <Escena fondo="salon"><div className="centrado" style={{ flex: 1 }}><span className="cargando">Abriendo la sala…</span></div></Escena>;
@@ -100,13 +111,16 @@ export function NivelPage() {
       desafio={desafio}
       numero={(indice ?? 0) + 1}
       total={data.desafios.length}
+      misiones={data.desafios.map((d) => ({ nombre: d.nombre, superado: d.superado }))}
+      onIrAMision={(i) => irAMision(i)}
+      onSalas={() => navigate('/inicio')}
       onSiguiente={(r) => {
-        if ((indice ?? 0) < data.desafios.length - 1) setIndice((indice ?? 0) + 1);
+        if ((indice ?? 0) < data.desafios.length - 1) irAMision((indice ?? 0) + 1);
         else if (r?.siguienteNivel || siguienteNivel) navigate(`/nivel/${r?.siguienteNivel ?? siguienteNivel!.id}`);
         else navigate('/perfil');
       }}
       textoSiguiente={(indice ?? 0) < data.desafios.length - 1 ? 'SIGUIENTE' : siguienteNivel ? 'SIGUIENTE NIVEL' : 'VER PERFIL'}
-      onAnterior={() => ((indice ?? 0) > 0 ? setIndice((indice ?? 0) - 1) : navigate('/inicio'))}
+      onAnterior={() => ((indice ?? 0) > 0 ? irAMision((indice ?? 0) - 1) : navigate('/inicio'))}
     />
   );
 }
@@ -121,9 +135,12 @@ interface SalaProps {
   textoSiguiente: string;
   onSiguiente: (r: ResultadoEvaluacion | null) => void;
   onAnterior: () => void;
+  misiones: { nombre: string; superado: boolean }[];
+  onIrAMision: (i: number) => void;
+  onSalas: () => void;
 }
 
-function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total, textoSiguiente, onSiguiente, onAnterior }: SalaProps) {
+function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total, textoSiguiente, onSiguiente, onAnterior, misiones, onIrAMision, onSalas }: SalaProps) {
   const evaluar = useEvaluar(idNivel);
   const escenario = escenarioDeNivel(ordenNivel);
   const esCodigo = desafio.tipo === 'CODIGO';
@@ -373,6 +390,18 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
             <span className="encabezado-nivel__desafio">Desafío {numero}/{total}: {desafio.nombre}</span>
           </h1>
           <p className="encabezado-nivel__instrucciones">{desafio.instrucciones}</p>
+          {total > 1 && (
+            <nav className="selector-misiones" aria-label="Misiones de este nivel">
+              {misiones.map((m, i) => (
+                <button key={i} type="button" title={m.nombre}
+                        className={`selector-misiones__boton${i === numero - 1 ? ' selector-misiones__boton--actual' : ''}${m.superado ? ' selector-misiones__boton--hecha' : ''}`}
+                        aria-current={i === numero - 1 ? 'step' : undefined}
+                        disabled={ejecutando} onClick={() => i !== numero - 1 && onIrAMision(i)}>
+                  {m.superado ? '★' : i + 1}
+                </button>
+              ))}
+            </nav>
+          )}
         </div>
       </header>
 
@@ -437,7 +466,9 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
             </div>
             <div className="panel-codigo__acciones">
               <button className="boton-run" onClick={ejecutar} disabled={bloqueado}>▶ {ejecutando ? 'Ejecutando…' : 'Run'}</button>
-              <button className="boton-codigo" onClick={() => setCodigo(desafio.codigoInicial ?? '')} disabled={bloqueado}>Restaurar código</button>
+              <button className="boton-codigo" onClick={() => setCodigo(desafio.codigoInicial ?? '')} disabled={bloqueado}>
+                {desafio.codigoInicial ? 'Restaurar código' : 'Limpiar editor'}
+              </button>
             </div>
             <div className="panel-codigo__inferior">
               <div className="panel-codigo__bloque panel-codigo__bloque--consola">
@@ -455,7 +486,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
       </div>
 
       <footer className="barra-inferior">
-        <BotonMadera icono="atras" etiqueta="ATRÁS" onClick={onAnterior} />
+        <BotonMadera icono="atras" etiqueta={numero > 1 ? 'MISIÓN ANTERIOR' : 'SALAS'} onClick={onAnterior} disabled={ejecutando} />
         <BotonMadera icono="informacion" etiqueta="INFORMACIÓN" onClick={() => setInfo(true)} />
         <BotonMadera icono="cargar" etiqueta="INSTRUCCIONES" onClick={() => setInstrucciones(true)} />
         <BotonMadera icono="reintentar" etiqueta="REINTENTAR" onClick={reintentar} disabled={ejecutando || evaluar.isPending} />
@@ -520,6 +551,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
           titulo={resultado.nivelCompletado ? 'NIVEL COMPLETADO' : '¡DESAFÍO SUPERADO!'}
           textoSiguiente={textoSiguiente}
           onReintentar={reintentar}
+          onSalas={onSalas}
           onSiguiente={() => onSiguiente(resultado)}
         />
       )}

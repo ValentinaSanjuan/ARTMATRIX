@@ -48,7 +48,8 @@ npm run dev
 - **Teoría (opcional)**: matrices, índices, recorridos por filas y columnas, condiciones con `%`,
   recorrido perimetral, dos condiciones a la vez y errores comunes. Se abre desde el inicio, el menú,
   al terminar el tutorial o con **VER TEORÍA** en las instrucciones de cada nivel.
-- **5 niveles**, todos disponibles desde el inicio.
+- **5 niveles con 18 misiones**, todos disponibles desde el inicio. Desde el nivel 4 el editor empieza vacío y el nivel 5 trae retos avanzados con menos pistas.
+- Diseño adaptable a celulares (la página se desplaza y la barra de botones queda fija abajo).
 
 ## Pruebas
 

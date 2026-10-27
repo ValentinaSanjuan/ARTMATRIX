@@ -6,8 +6,12 @@ export const claveCelda = (c: Celda) => `${c.fila}-${c.columna}`;
 export const mismaCelda = (a: Celda, b: Celda) => a.fila === b.fila && a.columna === b.columna;
 
 /** Escenario visual de cada nivel según los mockups: salas 1–2 con baldosas, 3–5 con estantería. */
-export function escenarioDeNivel(orden: number): { fondo: 'sala' | 'casa'; tablero: 'sala' | 'estanteria' } {
-  return orden <= 2 ? { fondo: 'sala', tablero: 'sala' } : { fondo: 'casa', tablero: 'estanteria' };
+export type FondoNivel = 'nivel1' | 'nivel2' | 'nivel3' | 'nivel4' | 'nivel5';
+
+/** Cada nivel tiene su propia sala (fondos generados para ArtMatrix). */
+export function escenarioDeNivel(orden: number): { fondo: FondoNivel; tablero: 'sala' | 'estanteria' } {
+  const n = Math.min(5, Math.max(1, orden));
+  return { fondo: `nivel${n}` as FondoNivel, tablero: n <= 2 ? 'sala' : 'estanteria' };
 }
 
 /** Mueve una posición dentro de los límites de la matriz (controles de flechas). */

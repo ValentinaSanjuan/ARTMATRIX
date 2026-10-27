@@ -8,13 +8,14 @@ interface Props {
   titulo: string;
   onReintentar: () => void;
   onSiguiente: () => void;
+  onSalas: () => void;
   textoSiguiente: string;
 }
 
 /** Mensaje de nivel completado con estrellas y recompensas (Fig. 15, 20; RF-12). */
-export function PanelNivelCompletado({ resultado, titulo, onReintentar, onSiguiente, textoSiguiente }: Props) {
+export function PanelNivelCompletado({ resultado, titulo, onReintentar, onSiguiente, onSalas, textoSiguiente }: Props) {
   return (
-    <div className="modal-fondo">
+    <div className="modal-fondo" role="dialog" aria-label={titulo}>
       <motion.div className="columna centrado" initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                   style={{ gap: 14 }}>
         <div className="fila" style={{ gap: 6 }}>
@@ -26,7 +27,7 @@ export function PanelNivelCompletado({ resultado, titulo, onReintentar, onSiguie
           ))}
         </div>
         <h2 className="titulo-pixel" style={{ fontSize: 'clamp(20px, 3.4vw, 40px)', color: 'var(--oro)' }}>{titulo}</h2>
-        <div className="panel--plano fila" style={{ gap: 20, alignItems: 'center' }}>
+        <div className="panel--plano fila panel-completado__cuerpo">
           <Curi animo="celebra" alto={150} />
           <div className="columna" style={{ gap: 8, maxWidth: 380 }}>
             <p className="texto-pixel" style={{ margin: 0 }}>{resultado.mensajeCuri}</p>
@@ -42,7 +43,8 @@ export function PanelNivelCompletado({ resultado, titulo, onReintentar, onSiguie
             ))}
           </div>
         </div>
-        <div className="fila" style={{ gap: 30 }}>
+        <div className="fila panel-completado__acciones">
+          <BotonMadera icono="menu" etiqueta="SALAS" alto={64} onClick={onSalas} />
           <BotonMadera icono="reintentar" etiqueta="REINTENTAR" alto={64} onClick={onReintentar} />
           <BotonMadera icono="siguiente" etiqueta={textoSiguiente} alto={64} onClick={onSiguiente} />
         </div>

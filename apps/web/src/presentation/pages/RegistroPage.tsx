@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authApi, type DatosRegistro } from '../../application/services/api';
 import { useSesion } from '../../application/stores/sesionStore';
@@ -30,6 +30,13 @@ export function RegistroPage() {
     },
   });
 
+  const [lento, setLento] = useState(false);
+  useEffect(() => {
+    if (!registro.isPending) { setLento(false); return; }
+    const t = setTimeout(() => setLento(true), 4000);
+    return () => clearTimeout(t);
+  }, [registro.isPending]);
+
   const enviar = (e: FormEvent) => {
     e.preventDefault();
     registro.mutate();
@@ -55,6 +62,7 @@ export function RegistroPage() {
           </label>
         ))}
         {registro.isError && <p className="mensaje-error" role="alert">{mensajeDeError(registro.error)}</p>}
+        {lento && <p className="aviso-pixel" role="status">Despertando el servidor… la primera vez puede tardar hasta 2 minutos.</p>}
         <div className="fila" style={{ justifyContent: 'space-between' }}>
           <button type="button" className="boton-tablon boton-tablon--pequeno" onClick={() => navigate('/login')}>‹ VOLVER</button>
           <button type="submit" className="boton-tablon boton-tablon--verde" disabled={registro.isPending}>
@@ -62,7 +70,7 @@ export function RegistroPage() {
           </button>
         </div>
       </form>
-      <div style={{ position: 'absolute', left: '6vw', bottom: '3vh' }}>
+      <div className="curi-login">
         <Curi animo={registro.isError ? 'pregunta' : 'feliz'} alto={120} />
       </div>
     </Escena>
