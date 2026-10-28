@@ -10,6 +10,7 @@ RUN mvn -q -B package -DskipTests
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=compilacion /app/target/artmatrix-api-*.jar app.jar
-ENV JAVA_OPTS="-Xmx384m"
+# Opciones pensadas para máquinas pequeñas (plan gratuito): arranque más rápido y menos memoria.
+ENV JAVA_OPTS="-Xmx320m -XX:MaxMetaspaceSize=128m -XX:TieredStopAtLevel=1 -XX:+UseSerialGC -Xss512k -Dspring.backgroundpreinitializer.ignore=true"
 EXPOSE 8080
 CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

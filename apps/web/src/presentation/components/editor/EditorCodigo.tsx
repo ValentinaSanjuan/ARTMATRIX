@@ -32,7 +32,13 @@ export function EditorCodigo({ valor, onCambio, lineaError, mensajeError, soloLe
         { token: 'number', foreground: 'b5cea8' },
         { token: 'string', foreground: 'f2b84b' },
       ],
-      colors: { 'editor.background': '#0e1a2b', 'editor.lineHighlightBackground': '#13243a' },
+      // Fondo semitransparente: deja ver un poco la sala detrás del editor.
+      colors: {
+        'editor.background': '#0e1a2b00',
+        'editorGutter.background': '#0e1a2b00',
+        'editor.lineHighlightBackground': '#ffffff12',
+        'editor.lineHighlightBorder': '#00000000',
+      },
     });
     monaco.editor.setTheme('artmatrix');
   };

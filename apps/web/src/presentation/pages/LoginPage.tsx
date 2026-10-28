@@ -46,7 +46,7 @@ export function LoginPage() {
   };
 
   return (
-    <Escena fondo="exterior">
+    <Escena fondo="inicio">
       <div style={{ marginTop: '2vh' }}><Letrero texto="ARTMATRIX" /></div>
       <form onSubmit={enviar} className="marco-metal columna" style={{ width: 'min(430px, 92vw)', margin: '18px auto 0' }}>
         <label className="campo-pixel">

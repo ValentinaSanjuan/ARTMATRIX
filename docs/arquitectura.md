@@ -84,7 +84,7 @@ Columnas añadidas (marcadas con `[+]` en `V1__init.sql`) y por qué:
 | 1 Sala de Iniciación | *La noche estrellada* en `[2][3]`; *El grito* en `[4][1]`; *El beso* en la primera fila y última columna | UBICAR |
 | 2 Llenado de espacios | Fila 1; columna 3; fila 5 de derecha a izquierda; diagonal principal | RECORRIDO |
 | 3 Condiciones pares | Fila 2 con un `for`; columna 4 en filas pares; columnas impares de la fila 1 | CÓDIGO (con código inicial) |
-| 4 Recorrido perimetral | Bordes; cuatro esquinas; solo el interior | CÓDIGO (editor vacío) |
+| 4 El gran golpe (Curi ladrón pide ayuda) | Bordes; cuatro esquinas; solo el interior — se dejan réplicas en lugar de las obras | CÓDIGO (editor vacío) |
 | 5 Exposición Maestra | Múltiplos de 2; serpiente; diagonales cruzadas; ronda en sentido horario; llenar huecos leyendo la matriz | CÓDIGO (editor vacío, máximo 1–2 pistas) |
 
 Cada nivel tiene su propio fondo (`public/img/fondos/nivel1..5.jpg`), generado con Gemini en el mismo estilo pixel art.

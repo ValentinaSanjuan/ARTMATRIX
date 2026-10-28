@@ -216,7 +216,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
             const malo = r.indiceError !== null && r.indiceError < pasos.length ? pasos[r.indiceError] : null;
             setErrorCelda(malo);
             if (esCodigo && malo) setReubicar([malo]);
-            setCuri({ mensaje: r.mensajeCuri, animo: curiMalvado ? 'alegre' : 'triste', tono: 'error' });
+            setCuri({ mensaje: r.mensajeCuri, animo: curiMalvado ? 'rasca' : 'triste', tono: 'error' });
             if (esCodigo) {
               setConsola((c) => [...c, { tipo: 'error', texto: `[Error de lógica] ${r.mensajeCuri}` }]);
             }
@@ -408,7 +408,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
       <div className="nivel-cuerpo">
         <div className="nivel-cuerpo__principal">
           <section className="nivel-zona">
-            <div ref={zonaTablero} className="zona-tablero">
+            <div ref={zonaTablero} className={`zona-tablero${esCodigo ? ' zona-tablero--codigo' : ''}`}>
               <TableroGaleria
                 filas={desafio.filas}
                 columnas={desafio.columnas}
@@ -455,7 +455,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
             </div>
           </section>
           <div style={{ padding: '4px 0 0' }}>
-            <DialogoCuri mensaje={curi.mensaje} animo={curi.animo} tono={curi.tono} alto={86} ladron={curiMalvado} />
+            <DialogoCuri mensaje={curi.mensaje} animo={curi.animo} tono={curi.tono} alto={124} ladron={curiMalvado} />
           </div>
         </div>
         {esCodigo && (
@@ -492,7 +492,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
         <BotonMadera icono="reintentar" etiqueta="REINTENTAR" onClick={reintentar} disabled={ejecutando || evaluar.isPending} />
         <BotonMadera icono="ayuda" etiqueta="AYUDA" onClick={pedirPista} disabled={desafio.totalPistas === 0} />
         <span className="barra-inferior__espacio" />
-        <BotonMadera icono="siguiente" etiqueta={textoSiguiente} disabled={!superado && !desafio.superado} onClick={() => onSiguiente(resultado)} />
+        <BotonMadera icono="siguiente" etiqueta={textoSiguiente} disabled={ejecutando} onClick={() => onSiguiente(resultado)} />
       </footer>
 
       {instrucciones && (

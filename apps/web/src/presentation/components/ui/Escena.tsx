@@ -2,7 +2,7 @@ import type { FondoNivel } from '../../../domain/rules/galeria';
 import type { ReactNode } from 'react';
 
 interface Props {
-  fondo: 'exterior' | 'salon' | FondoNivel;
+  fondo: 'inicio' | 'exterior' | 'salon' | FondoNivel;
   nocturna?: boolean;
   /** Filtro oscuro (nivel 4, Curi ladrón). */
   oscura?: boolean;

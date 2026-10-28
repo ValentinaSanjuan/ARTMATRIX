@@ -43,7 +43,7 @@ export function RegistroPage() {
   };
 
   return (
-    <Escena fondo="exterior">
+    <Escena fondo="inicio">
       <div style={{ marginTop: '1vh' }}><Letrero texto="ARTMATRIX" /></div>
       <form onSubmit={enviar} className="marco-metal columna" style={{ width: 'min(470px, 92vw)', margin: '14px auto 0', gap: 8 }}>
         {CAMPOS.map((c) => (

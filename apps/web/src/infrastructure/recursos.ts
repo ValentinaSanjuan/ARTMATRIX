@@ -5,7 +5,7 @@ export type AnimoCuri =
   | 'rasca' | 'alegre' | 'error' | 'celebra' | 'brazos_arriba' | 'saludo_izq' | 'camina'
   | 'perfil' | 'dormido' | 'senala_abajo' | 'espalda' | 'perfil_dormido';
 
-/** Curi normal o su versión ladrón (nivel 4: "Ha ocurrido un robo"). */
+/** Curi normal o su versión ladrón (nivel 4: "El gran golpe", Curi pide ayuda para robar). */
 export const imgCuri = (animo: AnimoCuri, ladron = false) => `/img/${ladron ? 'curi-ladron' : 'curi'}/${animo}.png`;
 
 export type IconoBoton =

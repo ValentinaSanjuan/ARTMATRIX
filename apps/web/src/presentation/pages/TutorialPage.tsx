@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PAGINAS_TUTORIAL } from '../../application/contenido/textos';
-import { useCompletarTutorial } from '../../application/hooks/useGaleria';
+import { useCompletarTutorial, useNiveles } from '../../application/hooks/useGaleria';
 import { useSesion } from '../../application/stores/sesionStore';
 import type { Celda } from '../../domain/models/tipos';
 import { mismaCelda } from '../../domain/rules/galeria';
@@ -12,7 +12,6 @@ import { MenuPrincipal } from '../components/paneles/MenuPrincipal';
 import { PanelInformacion } from '../components/paneles/PanelInformacion';
 import { BotonMadera } from '../components/ui/BotonMadera';
 import { Escena } from '../components/ui/Escena';
-import { Modal } from '../components/ui/Modal';
 
 const OBJETIVO: Celda = { fila: 1, columna: 2 };
 
@@ -25,12 +24,11 @@ export function TutorialPage() {
   const [toque, setToque] = useState<Celda | null>(null);
   const [menu, setMenu] = useState(false);
   const [info, setInfo] = useState(false);
-  const [fin, setFin] = useState(false);
+  const { data: niveles } = useNiveles();
 
   const actual = PAGINAS_TUTORIAL[pagina];
   const demo = 'demo' in actual ? actual.demo : undefined;
   const acerto = toque !== null && mismaCelda(toque, OBJETIVO);
-  const bloqueada = demo === 'interaccion' && !acerto;
 
   const irA = (p: number) => {
     setPagina(p);
@@ -39,13 +37,12 @@ export function TutorialPage() {
 
   const siguiente = () => {
     if (pagina < PAGINAS_TUTORIAL.length - 1) return irA(pagina + 1);
-    completar.mutate(undefined, {
-      onSettled: () => {
-        actualizarEstudiante({ tutorialCompletado: true });
-        guardarPaginaTutorial(0);
-        setFin(true); // la teoría es opcional: el estudiante elige si la ve antes de jugar
-      },
-    });
+    // COMENZAR: marca el tutorial como visto y lleva directo al nivel 1, sin esperar al servidor.
+    completar.mutate();
+    actualizarEstudiante({ tutorialCompletado: true });
+    guardarPaginaTutorial(0);
+    const primero = niveles?.find((n) => n.orden === 1);
+    navigate(`/nivel/${primero?.id ?? 1}`);
   };
 
   let texto: string = actual.texto;
@@ -95,24 +92,10 @@ export function TutorialPage() {
         <BotonMadera icono="informacion" etiqueta="INFORMACIÓN" onClick={() => setInfo(true)} />
         <span className="barra-inferior__espacio" />
         <BotonMadera icono="siguiente" etiqueta={pagina === PAGINAS_TUTORIAL.length - 1 ? 'COMENZAR' : 'SIGUIENTE'}
-                     disabled={bloqueada || completar.isPending} onClick={siguiente} />
+                     onClick={siguiente} />
       </footer>
       {menu && <MenuPrincipal onCerrar={() => setMenu(false)} onInformacion={() => setInfo(true)} />}
       {info && <PanelInformacion onCerrar={() => setInfo(false)} />}
-      {fin && (
-        <Modal titulo="¿REPASAMOS LA TEORÍA?"
-               acciones={<>
-                 <BotonMadera icono="informacion" etiqueta="VER TEORÍA" onClick={() => navigate('/teoria')} />
-                 <BotonMadera icono="siguiente" etiqueta="IR A LAS SALAS" onClick={() => navigate('/inicio')} />
-               </>}>
-          <div className="fila" style={{ alignItems: 'center', gap: 16 }}>
-            <p className="modal-tablero__texto" style={{ margin: 0, flex: 1 }}>
-              {'Antes de empezar puedes leer la TEORÍA: matrices, índices, recorridos y condiciones en Java, con ejemplos.\n\nEs opcional. También la encuentras en el inicio y en el menú cuando la necesites.'}
-            </p>
-            <Curi animo="piensa" alto={140} />
-          </div>
-        </Modal>
-      )}
     </Escena>
   );
 }

@@ -1,5 +1,8 @@
 /* ArtMatrix — estilo pixel art (mockups Fig. 6–23) */
 :root {
+  /* Transparencia del tablero: 1 = sólido, 0 = invisible */
+  --opacidad-celdas: .72;
+  --opacidad-marco: .55;
   --madera-oscura: #2b1a0e;
   --madera: #5a3a22;
   --madera-clara: #8b5a2b;
@@ -44,6 +47,8 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   overflow: hidden;
 }
 .escena--exterior { background-image: url('/img/fondos/exterior.jpg'); background-position: center bottom; }
+/* Inicio de sesión y registro */
+.escena--inicio   { background-image: url('/img/fondos/inicio.jpg'), url('/img/fondos/exterior.jpg'); background-position: center bottom; }
 .escena--salon    { background-image: url('/img/fondos/salon.jpg'); }
 .escena--nivel1   { background-image: url('/img/fondos/nivel1.jpg'), url('/img/fondos/salon.jpg'); }
 .escena--nivel2   { background-image: url('/img/fondos/nivel2.jpg'), url('/img/fondos/salon.jpg'); }
@@ -201,10 +206,9 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 .encabezado-nivel__texto {
   flex: 1;
   min-width: 0;
-  background: rgba(10, 8, 24, 0.82);
-  border: 3px solid #000;
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12), 4px 4px 0 rgba(0, 0, 0, 0.5);
-  padding: 8px 14px;
+  /* Sin recuadro: el texto va directo sobre la sala, con un contorno oscuro para leerse. */
+  padding: 4px 6px;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 3px 6px rgba(0, 0, 0, .9);
 }
 .encabezado-nivel__titulo {
   margin: 0;
@@ -250,6 +254,8 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   flex-direction: column;
 }
 .nivel-zona { flex: 1; display: flex; min-height: 0; }
+/* Niveles de código (3–5): el tablero se corre un poco a la derecha */
+.zona-tablero--codigo { padding-left: clamp(16px, 3vw, 56px); }
 .controles-nivel {
   width: clamp(210px, 24vw, 300px);
   flex-shrink: 0;
@@ -414,8 +420,8 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 .tablero__fila-indices { height: 22px; }
 .tablero--sala .tablero__marco {
   grid-column: 2 / -2;
-  background: #6b3d1d;
-  border: 8px solid #8b5427;
+  background: rgba(107, 61, 29, var(--opacidad-marco));
+  border: 8px solid rgba(139, 84, 39, .85);
   box-shadow: inset 0 0 0 3px #3a1d0b, 0 0 0 3px #3a1d0b, 6px 8px 0 rgba(0,0,0,.45);
 }
 .celda {
@@ -425,14 +431,23 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   border: none;
   padding: 0;
   cursor: pointer;
-  background: url('/img/ui/baldosa-piedra.png') center / cover;
+  background: none;
   outline: none;
   transition: transform .1s, box-shadow .1s;
 }
-.celda--madera { background-image: url('/img/ui/baldosa-madera.png'); }
+/* La baldosa va en una capa aparte para poder hacerla semitransparente sin afectar las obras */
+.celda::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/img/ui/baldosa-piedra.png') center / cover;
+  opacity: var(--opacidad-celdas);
+  pointer-events: none;
+}
+.celda--madera::before { background-image: url('/img/ui/baldosa-madera.png'); }
+.celda--estante::before { background: linear-gradient(#4b2a13, #2e180a); }
 .celda--estante {
-  background: linear-gradient(#4b2a13, #2e180a);
-  border: 4px solid #7a4a23;
+  border: 4px solid rgba(122, 74, 35, .85);
   box-shadow: inset 0 -6px 0 #9a6331, inset 0 4px 10px rgba(0,0,0,.55);
 }
 .celda:hover { box-shadow: inset 0 0 0 3px rgba(255,255,255,.55); }
@@ -494,8 +509,8 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 
 /* Estantería (niveles 3–5) */
 .estanteria {
-  background: rgba(46, 24, 10, .82);
-  border: 10px solid #7a4a23;
+  background: rgba(46, 24, 10, var(--opacidad-marco));
+  border: 10px solid rgba(122, 74, 35, .85);
   box-shadow: inset 0 0 0 4px #3a1d0b, 0 0 0 4px #2a1508, 8px 10px 0 rgba(0,0,0,.5);
   padding: 4px 6px 10px;
 }
@@ -505,7 +520,9 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: var(--noche);
+  background: rgba(14, 26, 43, 0.485);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   border: 2px solid var(--noche-borde);
   border-radius: 6px;
   padding: 8px;
@@ -528,7 +545,9 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 .panel-codigo--lateral {
   width: min(580px, 43vw);
   flex-shrink: 0;
-  margin-bottom: 6px;
+  margin-bottom: 15px;
+  margin-right: clamp(40px, 9vw, 140px); /* ← separación del borde derecho: súbelo para mover el editor a la izquierda */
+  margin-top: -15px;
   overflow: hidden;
 }
 .panel-codigo__inferior { display: flex; gap: 10px; flex-shrink: 0; min-height: 0; }
@@ -563,7 +582,7 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   cursor: pointer;
 }
 .consola {
-  background: #08111d;
+  background: rgba(8, 17, 29, .7);
   border: 1px solid var(--noche-borde);
   font-family: var(--fuente-codigo);
   font-size: 12.5px;
@@ -842,11 +861,15 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 }
 
 /* ---------- Inicio ---------- */
-.inicio-letrero { margin-top: 2vh; }
+.inicio-letrero { margin-top: 1vh; }
+/* Letrero más pequeño en el inicio para que los botones queden más arriba */
+.inicio-letrero .letrero { width: min(560px, 42vw); }
+.inicio-letrero .letrero .titulo-pixel { font-size: clamp(16px, 2.4vw, 34px); }
 .inicio-cuerpo {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;   /* botones arriba, justo debajo del letrero */
+  padding-top: 2vh !important;
   justify-content: center;
   gap: 4vw;
   flex-wrap: wrap;
@@ -941,7 +964,8 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   .marco-metal { padding: 18px 14px; }
 
   .burbuja { font-size: 19px; padding: 8px 10px; }
-  .dialogo-curi .curi { height: 64px !important; }
+  .dialogo-curi .curi { height: 84px !important; }
+  .zona-tablero--codigo { padding-left: 0; }
 
   /* Nivel */
   .encabezado-nivel { padding: 6px 8px 0; gap: 8px; }
@@ -952,7 +976,7 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   .nivel-cuerpo__principal, .nivel-zona { flex: none; }
   .zona-tablero { flex-direction: column; gap: 12px; overflow: visible; padding: 4px 0; }
   .controles-nivel { width: 100%; gap: 10px; }
-  .panel-codigo--lateral { width: 100%; margin-bottom: 8px; overflow: visible; }
+  .panel-codigo--lateral { width: 100%; margin: 0 0 8px; overflow: visible; }
   .panel-codigo__editor { min-height: 260px; height: 46vh; flex: none; }
   .panel-codigo__inferior { flex-direction: column; }
   .panel-codigo__bloque--consola .consola { min-height: 120px; max-height: 200px; }
