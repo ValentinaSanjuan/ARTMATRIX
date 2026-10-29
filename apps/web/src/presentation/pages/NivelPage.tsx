@@ -8,7 +8,7 @@ import type { Celda, Desafio, Pista, ResultadoEvaluacion } from '../../domain/mo
 import { claveCelda, escenarioDeNivel, mismaCelda, mover } from '../../domain/rules/galeria';
 import { mensajeDeError } from '../../infrastructure/api/clienteAxios';
 import { ejecutarJava } from '../../infrastructure/interprete';
-import { OBRAS_GALERIA, type AnimoCuri } from '../../infrastructure/recursos';
+import { imgMarcador, OBRAS_GALERIA, type AnimoCuri } from '../../infrastructure/recursos';
 import { Curi, DialogoCuri } from '../components/curi/Curi';
 import { Consola, type LineaConsola } from '../components/editor/Consola';
 import { EditorCodigo } from '../components/editor/EditorCodigo';
@@ -188,13 +188,21 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
       .filter((o) => o !== movil)
       .map((o) => ({ fila: o.fila, columna: o.columna, imagen: o.imagen, nombre: o.nombre }));
     if (movil && posMovil) lista.push({ ...posMovil, imagen: movil.imagen, nombre: movil.nombre, movil: !superado });
+    // Recorridos con objeto propio (pergaminos, mapas, libros): aparece en cada celda marcada.
+    if (desafio.marcador) {
+      recorrido.forEach((c, i) => {
+        if (!lista.some((o) => mismaCelda(o, c))) {
+          lista.push({ ...c, imagen: imgMarcador(desafio.marcador!, i), nombre: `${desafio.marcador} ${i + 1}` });
+        }
+      });
+    }
     colocadas.forEach((c, i) => {
       if (!lista.some((o) => mismaCelda(o, c))) {
         lista.push({ ...c, imagen: OBRAS_GALERIA[i % OBRAS_GALERIA.length], nombre: `Obra colocada ${i + 1}` });
       }
     });
     return lista;
-  }, [desafio.obras, movil, posMovil, colocadas, superado]);
+  }, [desafio.obras, desafio.marcador, movil, posMovil, colocadas, recorrido, superado]);
 
   const imagenesMini = useMemo(() => new Map(obras.map((o) => [claveCelda(o), o.imagen])), [obras]);
 

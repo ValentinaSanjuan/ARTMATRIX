@@ -32,7 +32,7 @@ public final class Vistas {
                           String instrucciones, int filas, int columnas, String modo, String obraMovil,
                           List<List<Integer>> baldosas, String codigoInicial, boolean nocturno,
                           int totalPistas, boolean superado, List<ObraEnMatriz> obras,
-                          List<MensajeCuri> mensajes) {
+                          List<MensajeCuri> mensajes, String marcador) {
     }
 
     public record NivelDetalle(NivelResumen nivel, List<Desafio> desafios) {

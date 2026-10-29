@@ -72,6 +72,8 @@ export interface Desafio {
   superado: boolean;
   obras: ObraEnMatriz[];
   mensajes: MensajeCuri[];
+  /** Objeto que aparece en las celdas marcadas de un recorrido (pergaminos, mapas, libros…). */
+  marcador?: 'pergaminos' | 'mapas' | 'libros' | 'libros-abiertos' | null;
 }
 
 export interface NivelDetalle {

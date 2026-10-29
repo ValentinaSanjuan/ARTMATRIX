@@ -114,6 +114,6 @@ public class NivelDesafioService {
                 d.getInstrucciones(), c.filas(), c.columnas(), c.modo().name(), c.obraMovil(),
                 c.baldosas() == null ? List.of() : c.baldosas(), c.codigoInicial(),
                 Boolean.TRUE.equals(c.nocturno()), orientacion.totalPistas(d.getId()), superado,
-                obras, orientacion.mensajes(d.getId()));
+                obras, orientacion.mensajes(d.getId()), c.marcador());
     }
 }

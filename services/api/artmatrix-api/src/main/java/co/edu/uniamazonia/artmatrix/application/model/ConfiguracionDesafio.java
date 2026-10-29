@@ -22,7 +22,9 @@ public record ConfiguracionDesafio(
         List<List<Integer>> baldosas,
         String codigoInicial,
         Integer puntos,
-        Boolean nocturno) {
+        Boolean nocturno,
+        /** Objeto que aparece en las celdas marcadas: pergaminos, mapas, libros o libros-abiertos. */
+        String marcador) {
 
     private static final ObjectMapper JSON = new ObjectMapper();
 

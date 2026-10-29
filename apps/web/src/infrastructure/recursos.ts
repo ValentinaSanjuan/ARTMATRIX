@@ -24,3 +24,15 @@ export const OBRAS_GALERIA = [
 ].map((clave) => `/img/obras/${clave}.png`);
 
 export const imgObra = (clave: string) => `/img/obras/${clave}.png`;
+
+/** Objetos que aparecen en las celdas al marcar un recorrido (nivel 2: pergaminos, mapas, libros). */
+const MARCADORES = {
+  pergaminos: [1, 2, 3, 4, 5, 6].map((i) => `/img/marcadores/pergamino-${i}.png`),
+  mapas: [1, 2, 3, 4].map((i) => `/img/marcadores/pergamino-${i}.png`),
+  libros: [1, 2, 3, 4, 5, 6, 7].map((i) => `/img/marcadores/libros-${i}.png`),
+  'libros-abiertos': [1, 2, 3, 4, 5, 6, 7].map((i) => `/img/marcadores/libro-abierto-${i}.png`),
+} as const;
+
+export type TipoMarcador = keyof typeof MARCADORES;
+
+export const imgMarcador = (tipo: TipoMarcador, i: number) => MARCADORES[tipo][i % MARCADORES[tipo].length];
