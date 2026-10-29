@@ -43,6 +43,14 @@ export function EditorCodigo({ valor, onCambio, lineaError, mensajeError, soloLe
     monaco.editor.setTheme('artmatrix');
   };
 
+  // Al terminar de ejecutar, el editor vuelve a quedar editable y con el cursor listo para escribir.
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    editor.updateOptions({ readOnly: !!soloLectura });
+    if (!soloLectura) editor.focus();
+  }, [soloLectura]);
+
   useEffect(() => {
     const editor = editorRef.current;
     const monaco = monacoRef.current;

@@ -181,6 +181,8 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
 
   const superado = resultado?.correcto === true;
   const bloqueado = evaluar.isPending || ejecutando || superado;
+  // En el editor se puede volver a escribir y ejecutar siempre, incluso después de superar la misión.
+  const bloqueadoCodigo = evaluar.isPending || ejecutando;
 
   // ---- Obras visibles ----
   const obras: ObraVisible[] = useMemo(() => {
@@ -383,8 +385,22 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
     setLineaError(null);
     setConsola([]);
     setCursor({ fila: 0, columna: 0 });
+    setCodigo(desafio.codigoInicial ?? ''); // reiniciar borra lo que escribió el estudiante
     iniciadoEn.current = new Date().toISOString();
     setCuri({ mensaje: intro, animo: 'feliz', tono: 'normal' });
+  };
+
+  /** Al volver a escribir después de un Run se limpia el resultado anterior para poder ejecutar de nuevo. */
+  const alEditar = (v: string) => {
+    setCodigo(v);
+    if (resultado || colocadas.length || lineaError) {
+      setResultado(null);
+      setColocadas([]);
+      setCorrectas([]);
+      setReubicar([]);
+      setErrorCelda(null);
+      setLineaError(null);
+    }
   };
 
   // ---- Interfaz ----
@@ -470,11 +486,11 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
           <aside className="panel-codigo panel-codigo--lateral">
             <div className="panel-codigo__cabecera"><span>Editor de Código — Java</span><span>Galeria.java</span></div>
             <div className="panel-codigo__editor">
-              <EditorCodigo valor={codigo} onCambio={setCodigo} lineaError={lineaError?.linea} mensajeError={lineaError?.mensaje} soloLectura={ejecutando} />
+              <EditorCodigo valor={codigo} onCambio={alEditar} lineaError={lineaError?.linea} mensajeError={lineaError?.mensaje} soloLectura={ejecutando} />
             </div>
             <div className="panel-codigo__acciones">
-              <button className="boton-run" onClick={ejecutar} disabled={bloqueado}>▶ {ejecutando ? 'Ejecutando…' : 'Run'}</button>
-              <button className="boton-codigo" onClick={() => setCodigo(desafio.codigoInicial ?? '')} disabled={bloqueado}>
+              <button className="boton-run" onClick={ejecutar} disabled={bloqueadoCodigo}>▶ {ejecutando ? 'Ejecutando…' : 'Run'}</button>
+              <button className="boton-codigo" onClick={() => alEditar(desafio.codigoInicial ?? '')} disabled={bloqueadoCodigo}>
                 {desafio.codigoInicial ? 'Restaurar código' : 'Limpiar editor'}
               </button>
             </div>
