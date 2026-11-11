@@ -1009,11 +1009,17 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 
 /* --- Legibilidad (USR-01): letra legible y con más contraste en los textos largos;
        la letra pixelada queda para títulos y botones. --- */
+/* Press Start 2P encoge las mayúsculas con tilde para que quepa el acento ("TELéFONO", "M¡N.").
+   Esta fuente trae solo esas letras (Á É Í Ó Ú Ü Ñ) al mismo tamaño que las demás, con el acento encima. */
+@font-face {
+  font-family: 'Acentos Titulo';
+  src: url('/fonts/acentos-titulo.woff') format('woff');
+  font-display: swap;
+  unicode-range: U+00C1, U+00C9, U+00CD, U+00D1, U+00D3, U+00DA, U+00DC;
+}
 :root {
   --fuente-lectura: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  /* Las mayúsculas con tilde se dibujan con Pixelify Sans (Press Start 2P las muestra
-     como "TELéFONO" o "M¡N."); el resto del título sigue en Press Start 2P. */
-  --fuente-titulo: 'Pixelify Sans', 'Press Start 2P', monospace;
+  --fuente-titulo: 'Acentos Titulo', 'Press Start 2P', monospace;
 }
 .encabezado-nivel__instrucciones,
 .ayuda-controles,
