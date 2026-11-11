@@ -7,6 +7,7 @@ import { mensajeDeError } from '../../infrastructure/api/clienteAxios';
 import { Curi } from '../components/curi/Curi';
 import { Escena } from '../components/ui/Escena';
 import { Letrero } from '../components/ui/Letrero';
+import { AvisoServidor } from '../components/ui/AvisoServidor';
 
 const CAMPOS: { clave: keyof DatosRegistro; icono: string; texto: string; tipo?: string; requerido?: boolean }[] = [
   { clave: 'nombre', icono: '☺', texto: 'NOMBRE COMPLETO', requerido: true },
@@ -61,6 +62,7 @@ export function RegistroPage() {
             />
           </label>
         ))}
+        <AvisoServidor />
         {registro.isError && <p className="mensaje-error" role="alert">{mensajeDeError(registro.error)}</p>}
         {lento && <p className="aviso-pixel" role="status">Despertando el servidor… la primera vez puede tardar hasta 2 minutos.</p>}
         <div className="fila" style={{ justifyContent: 'space-between' }}>

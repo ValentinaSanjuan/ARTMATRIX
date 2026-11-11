@@ -7,6 +7,7 @@ import { mensajeDeError } from '../../infrastructure/api/clienteAxios';
 import { Curi } from '../components/curi/Curi';
 import { Escena } from '../components/ui/Escena';
 import { Letrero } from '../components/ui/Letrero';
+import { AvisoServidor } from '../components/ui/AvisoServidor';
 
 /** RF-02 Iniciar sesión (Fig. 6). */
 export function LoginPage() {
@@ -59,6 +60,7 @@ export function LoginPage() {
           <span className="oculto-visual">Contraseña</span>
           <input type="password" value={contrasena} onChange={(e) => setContrasena(e.target.value)} placeholder="CONTRASEÑA" autoComplete="current-password" required />
         </label>
+        <AvisoServidor />
         {login.isError && <p className="mensaje-error" role="alert">{mensajeDeError(login.error)}</p>}
         {lento && <p className="aviso-pixel" role="status">Despertando el servidor… la primera vez puede tardar hasta 2 minutos.</p>}
         {despedida && <p className="aviso-pixel" role="status">¡Hasta pronto! Ya puedes cerrar esta pestaña.</p>}

@@ -33,6 +33,36 @@ public class ValidadorRecorrido {
                 : validarConjunto(recorrido, solucion);
     }
 
+    /**
+     * Revisa un recorrido que el estudiante todavía está construyendo (aviso inmediato, sin registrar
+     * el intento): solo dice si los pasos dados hasta ahora van bien y, si no, cuál es el primero errado.
+     * No exige que el recorrido esté completo.
+     */
+    public ResultadoValidacion verificarAvance(Matriz matriz, List<Celda> recorrido, List<Celda> solucion,
+                                               ModoValidacion modo) {
+        if (recorrido == null || recorrido.isEmpty()) {
+            return ResultadoValidacion.ok();
+        }
+        Set<Celda> esperadas = new HashSet<>(solucion);
+        for (int i = 0; i < recorrido.size(); i++) {
+            Celda c = recorrido.get(i);
+            if (!matriz.contiene(c)) {
+                return ResultadoValidacion.error(Motivo.FUERA_DE_MATRIZ, i);
+            }
+            if (modo == ModoValidacion.ORDEN) {
+                if (i >= solucion.size()) {
+                    return ResultadoValidacion.error(Motivo.CELDAS_DE_MAS, i);
+                }
+                if (!c.equals(solucion.get(i))) {
+                    return ResultadoValidacion.error(Motivo.ORDEN_INCORRECTO, i);
+                }
+            } else if (!esperadas.contains(c)) {
+                return ResultadoValidacion.error(Motivo.CELDAS_DE_MAS, i);
+            }
+        }
+        return ResultadoValidacion.ok();
+    }
+
     private ResultadoValidacion validarOrden(List<Celda> recorrido, List<Celda> solucion, TipoDesafio tipo) {
         Motivo motivoPaso = tipo == TipoDesafio.UBICAR ? Motivo.POSICION_INCORRECTA : Motivo.ORDEN_INCORRECTO;
         for (int i = 0; i < recorrido.size(); i++) {

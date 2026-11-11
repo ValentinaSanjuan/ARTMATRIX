@@ -36,6 +36,10 @@ export const nivelesApi = {
 export const desafiosApi = {
   evaluar: (id: number, s: SolicitudEvaluacion) =>
     datos(clienteAxios.post<ResultadoEvaluacion>(`/desafios/${id}/evaluar`, s)),
+  /** Aviso inmediato al marcar una celda de un recorrido (no registra intento). */
+  verificarPaso: (id: number, recorrido: Celda[]) =>
+    datos(clienteAxios.post<{ correcto: boolean; indiceError: number | null; mensaje: string | null }>(
+      `/desafios/${id}/verificar-paso`, { recorrido, pistasUsadas: 0 })),
   pista: (id: number, orden: number) => datos(clienteAxios.get<Pista>(`/desafios/${id}/pistas/${orden}`)),
 };
 

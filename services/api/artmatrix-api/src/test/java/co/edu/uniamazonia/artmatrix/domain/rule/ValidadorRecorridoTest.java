@@ -75,4 +75,25 @@ class ValidadorRecorridoTest {
         assertEquals(16, borde.size());
         assertTrue(v.validar(est, borde, borde, ModoValidacion.CONJUNTO, TipoDesafio.CODIGO).correcto());
     }
+
+    @Test
+    void avanceParcialCorrectoNoEsError() {
+        var r = v.verificarAvance(m, fila1.subList(0, 2), fila1, ModoValidacion.ORDEN);
+        assertTrue(r.correcto());
+    }
+
+    @Test
+    void avanceSenalaLaPrimeraCeldaEquivocada() {
+        var r = v.verificarAvance(m, List.of(new Celda(1, 0), new Celda(2, 2)), fila1, ModoValidacion.ORDEN);
+        assertFalse(r.correcto());
+        assertEquals(1, r.indiceError());
+    }
+
+    @Test
+    void avanceEnConjuntoAceptaCualquierOrden() {
+        var r = v.verificarAvance(m, List.of(new Celda(1, 2), new Celda(1, 0)), fila1, ModoValidacion.CONJUNTO);
+        assertTrue(r.correcto());
+        var malo = v.verificarAvance(m, List.of(new Celda(1, 2), new Celda(0, 0)), fila1, ModoValidacion.CONJUNTO);
+        assertEquals(1, malo.indiceError());
+    }
 }

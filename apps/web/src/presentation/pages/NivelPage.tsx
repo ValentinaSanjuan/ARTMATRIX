@@ -218,6 +218,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
           if (r.correcto) {
             setCorrectas(pasos);
             setErrorCelda(null);
+            setAvisoPaso(null);
             setReubicar([]);
             setCuri({ mensaje: r.mensajeCuri, animo: 'celebra', tono: 'exito' });
             if (esCodigo) setConsola((c) => [...c, { tipo: 'ok', texto: `[${hora()}] ¡Solución correcta! +${r.puntos} puntos` }]);
@@ -252,19 +253,45 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
   };
 
   // ---- RECORRIDO (RF-07) ----
+  // Mejora de usabilidad (USR-01): cada celda se revisa apenas se toca; si no sigue el recorrido,
+  // se pinta de rojo y aparece un aviso junto al tablero, sin esperar a COMPROBAR.
+  const [avisoPaso, setAvisoPaso] = useState<string | null>(null);
+  const verificacion = useRef(0);
+  const verificarAvance = (pasos: Celda[]) => {
+    const id = ++verificacion.current;
+    if (pasos.length === 0) { setAvisoPaso(null); return; }
+    desafiosApi.verificarPaso(desafio.id, pasos).then((v) => {
+      if (id !== verificacion.current) return; // ya hay una marca más reciente
+      if (!v.correcto && v.indiceError !== null && v.indiceError < pasos.length) {
+        const mensaje = v.mensaje ?? 'Esa celda no sigue el recorrido.';
+        setErrorCelda(pasos[v.indiceError]);
+        setAvisoPaso(mensaje);
+        setCuri({ mensaje, animo: curiMalvado ? 'rasca' : 'pregunta', tono: 'error' });
+      } else {
+        setErrorCelda(null);
+        setAvisoPaso(null);
+        setCuri((c) => (c.tono === 'error' ? { mensaje: '¡Vas bien! Sigue con la siguiente celda.', animo: 'feliz', tono: 'normal' } : c));
+      }
+    }).catch(() => { /* sin conexión: se valida al COMPROBAR */ });
+  };
+
   /** Marca una celda; si ya estaba marcada, la desmarca (deseleccionar). */
   const marcar = (c: Celda) => {
     if (bloqueado) return;
     setCursor(c);
     setErrorCelda(null);
     setResultado(null);
-    setRecorrido((r) => (r.some((x) => mismaCelda(x, c)) ? r.filter((x) => !mismaCelda(x, c)) : [...r, c]));
+    const nuevo = recorrido.some((x) => mismaCelda(x, c)) ? recorrido.filter((x) => !mismaCelda(x, c)) : [...recorrido, c];
+    setRecorrido(nuevo);
+    verificarAvance(nuevo);
   };
 
   const deshacer = () => {
     setErrorCelda(null);
     setResultado(null);
-    setRecorrido((r) => r.slice(0, -1));
+    const nuevo = recorrido.slice(0, -1);
+    setRecorrido(nuevo);
+    verificarAvance(nuevo);
   };
 
   const soltarSeleccion = () => setSeleccionada(false);
@@ -376,6 +403,8 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
     setPosMovil(movil ? { fila: movil.fila, columna: movil.columna } : null);
     setSeleccionada(false);
     setRecorrido([]);
+    verificacion.current++;
+    setAvisoPaso(null);
     setColocadas([]);
     setCorrectas([]);
     setErrorCelda(null);
@@ -452,27 +481,37 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
                 onSoltarObra={ubicar}
                 onTomarObra={() => setSeleccionada(true)}
               />
-              {!esCodigo && (
+              {!esCodigo && desafio.tipo === 'RECORRIDO' && (
+                // Mejora de usabilidad (USR-01): los botones y el aviso quedan junto al tablero y visibles
+                // sin desplazarse; tocar la celda es la forma principal de marcar y las flechas son opcionales.
+                <aside className="controles-nivel controles-nivel--recorrido">
+                  {avisoPaso
+                    ? <p className="aviso-paso" role="alert">{avisoPaso}</p>
+                    : <p className="ayuda-controles">Toca las celdas en orden. Si tocas una celda marcada, se desmarca.</p>}
+                  <div className="fila" style={{ gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <BotonMadera icono="atras" etiqueta="DESHACER" disabled={bloqueado || recorrido.length === 0} onClick={deshacer} />
+                    <BotonMadera icono="completado" etiqueta="COMPROBAR" disabled={bloqueado || recorrido.length === 0} onClick={() => enviar(recorrido)} />
+                  </div>
+                  <details className="controles-teclado">
+                    <summary>Usar flechas en lugar de tocar</summary>
+                    <ControlesFlechas onMover={moverCursor} deshabilitado={bloqueado} />
+                    <BotonMadera icono="aceptar" etiqueta="MARCAR" onClick={accionCursor} disabled={bloqueado} />
+                  </details>
+                </aside>
+              )}
+              {!esCodigo && desafio.tipo !== 'RECORRIDO' && (
                 <aside className="controles-nivel">
                   <ControlesFlechas onMover={moverCursor} deshabilitado={bloqueado} />
                   <div className="fila" style={{ gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <BotonMadera icono="aceptar" etiqueta={desafio.tipo === 'UBICAR' ? 'COLOCAR AQUÍ' : 'MARCAR'} onClick={accionCursor} disabled={bloqueado} />
-                    {desafio.tipo === 'UBICAR' && seleccionada && (
+                    <BotonMadera icono="aceptar" etiqueta="COLOCAR AQUÍ" onClick={accionCursor} disabled={bloqueado} />
+                    {seleccionada && (
                       <BotonMadera icono="detener" etiqueta="SOLTAR" onClick={soltarSeleccion} disabled={bloqueado} />
-                    )}
-                    {desafio.tipo === 'RECORRIDO' && (
-                      <>
-                        <BotonMadera icono="atras" etiqueta="DESHACER" disabled={bloqueado || recorrido.length === 0} onClick={deshacer} />
-                        <BotonMadera icono="completado" etiqueta="COMPROBAR" disabled={bloqueado || recorrido.length === 0} onClick={() => enviar(recorrido)} />
-                      </>
                     )}
                   </div>
                   <p className="ayuda-controles">
-                    {desafio.tipo === 'UBICAR'
-                      ? seleccionada
-                        ? 'Obra seleccionada: toca la celda de destino, o tócala otra vez (o SOLTAR / Esc) para deseleccionarla.'
-                        : 'Toca la obra que flota para seleccionarla (o arrástrala) y luego la celda de destino.'
-                      : 'Toca las celdas en orden. Si tocas una celda marcada, se desmarca. DESHACER quita la última.'}
+                    {seleccionada
+                      ? 'Obra seleccionada: toca la celda de destino, o tócala otra vez (o SOLTAR / Esc) para deseleccionarla.'
+                      : 'Toca la obra que flota para seleccionarla (o arrástrala) y luego la celda de destino.'}
                   </p>
                 </aside>
               )}

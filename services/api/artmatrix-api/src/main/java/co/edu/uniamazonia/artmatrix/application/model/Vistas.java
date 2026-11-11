@@ -45,6 +45,10 @@ public final class Vistas {
                              boolean obtenida, LocalDateTime fechaObtencion) {
     }
 
+    /** Aviso inmediato al marcar una celda de un recorrido (no registra intento). */
+    public record VerificacionPaso(boolean correcto, Integer indiceError, String mensaje) {
+    }
+
     public record ResultadoEvaluacion(boolean correcto, String motivo, Integer indiceError, String mensajeCuri,
                                       int estrellas, int puntos, boolean nivelCompletado,
                                       Integer siguienteNivel, List<Recompensa> recompensasNuevas) {

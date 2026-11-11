@@ -53,6 +53,27 @@ public class EvaluacionService {
                             LocalDateTime iniciadoEn) {
     }
 
+    /**
+     * Aviso inmediato (prueba de usabilidad, USR-01): revisa cada celda apenas el estudiante la marca,
+     * sin registrar un intento ni afectar las estrellas.
+     */
+    @Transactional
+    public Vistas.VerificacionPaso verificarPaso(Integer idEstudiante, Integer idDesafio, List<Celda> recorrido) {
+        DesafioEntity desafio = nivelDesafio.desafio(idDesafio);
+        nivelDesafio.verificarAcceso(idEstudiante, desafio);
+        ConfiguracionDesafio config = ConfiguracionDesafio.leer(desafio.getConfiguracion());
+        ResultadoValidacion r = validador.verificarAvance(config.matriz(), recorrido, config.celdasSolucion(), config.modo());
+        if (r.correcto()) {
+            return new Vistas.VerificacionPaso(true, null, null);
+        }
+        String mensaje = switch (r.motivo()) {
+            case ORDEN_INCORRECTO -> "Esa celda no sigue el recorrido. Tócala otra vez para quitarla o usa DESHACER.";
+            case FUERA_DE_MATRIZ -> "Esa posición está fuera de la matriz.";
+            default -> "Esa celda no hace parte del recorrido. Tócala otra vez para quitarla.";
+        };
+        return new Vistas.VerificacionPaso(false, r.indiceError(), mensaje);
+    }
+
     @Transactional
     public Vistas.ResultadoEvaluacion evaluar(Integer idEstudiante, Integer idDesafio, Solicitud s) {
         DesafioEntity desafio = nivelDesafio.desafio(idDesafio);

@@ -1,0 +1,24 @@
+# Mejora de usabilidad (USR-02): el plan gratuito de Render suspende el servidor tras unos
+# minutos sin uso y la primera cuenta tardaba varios minutos en crearse. Este flujo visita el
+# servidor cada 10 minutos para que no se duerma (y, de paso, mantiene activa la base de datos).
+name: Mantener servidor activo
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Despertar la API de ArtMatrix
+        run: |
+          for i in 1 2 3; do
+            if curl -fsS --max-time 120 https://artmatrix-api.onrender.com/actuator/health; then
+              echo; echo "Servidor activo"; exit 0
+            fi
+            sleep 15
+          done
+          echo "El servidor no respondió"; exit 1

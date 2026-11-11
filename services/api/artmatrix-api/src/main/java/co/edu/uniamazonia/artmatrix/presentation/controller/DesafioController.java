@@ -34,6 +34,14 @@ public class DesafioController {
                 new EvaluacionService.Solicitud(recorrido, e.codigo(), e.salida(), e.pistasUsadas(), e.iniciadoEn()));
     }
 
+    /** Aviso inmediato al marcar cada celda de un recorrido (no registra intento). */
+    @PostMapping("/verificar-paso")
+    public Vistas.VerificacionPaso verificarPaso(@AuthenticationPrincipal Jwt jwt, @PathVariable Integer idDesafio,
+                                                 @Valid @RequestBody Solicitudes.Evaluacion e) {
+        var recorrido = e.recorrido().stream().map(p -> new Celda(p.fila(), p.columna())).toList();
+        return evaluacion.verificarPaso(Sesion.id(jwt), idDesafio, recorrido);
+    }
+
     @GetMapping("/pistas/{orden}")
     public Vistas.Pista pista(@AuthenticationPrincipal Jwt jwt, @PathVariable Integer idDesafio, @PathVariable int orden) {
         niveles.verificarAcceso(Sesion.id(jwt), niveles.desafio(idDesafio));

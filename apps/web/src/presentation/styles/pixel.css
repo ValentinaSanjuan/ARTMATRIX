@@ -1002,3 +1002,109 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   .letrero { width: min(420px, 50vw); }
   .boton-madera img { height: calc(var(--alto, 46px) * .7); }
 }
+
+/* =====================================================================
+   Mejoras de la prueba de usabilidad (09/11/2026)
+   ===================================================================== */
+
+/* --- Legibilidad (USR-01): letra legible y con más contraste en los textos largos;
+       la letra pixelada queda para títulos y botones. --- */
+:root {
+  --fuente-lectura: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  /* Las mayúsculas con tilde se dibujan con Pixelify Sans (Press Start 2P las muestra
+     como "TELéFONO" o "M¡N."); el resto del título sigue en Press Start 2P. */
+  --fuente-titulo: 'Pixelify Sans', 'Press Start 2P', monospace;
+}
+.encabezado-nivel__instrucciones,
+.ayuda-controles,
+.mensaje-error,
+.burbuja,
+.modal-tablero__texto,
+.teoria__texto,
+.teoria__burbuja,
+.aviso-pixel,
+.aviso-paso,
+.aviso-servidor {
+  font-family: var(--fuente-lectura);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+.encabezado-nivel__instrucciones { font-size: clamp(15px, 1.15vw, 18px); color: #fff; }
+.ayuda-controles { font-size: 15px; }
+.mensaje-error { font-size: 15px; color: #fff; }
+.burbuja { font-size: 17px; }
+.modal-tablero__texto { font-size: 16px; color: #fff8e6; }
+.teoria__texto { font-size: clamp(16px, 1.25vw, 19px); }
+.teoria__burbuja { font-size: 16px; }
+.aviso-pixel { font-size: 15px; }
+
+.campo-pixel { background: #2a1709; }
+.campo-pixel input {
+  font-family: var(--fuente-lectura);
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff8e6;
+  letter-spacing: .02em;
+}
+.campo-pixel input::placeholder { color: #e9d2a6; opacity: 1; }
+
+/* --- Aviso inmediato en los recorridos (USR-01) --- */
+.aviso-paso {
+  margin: 0;
+  max-width: 100%;
+  font-size: 15px;
+  color: #fff;
+  background: rgba(150, 28, 24, .92);
+  border: 3px solid #5c120f;
+  box-shadow: 0 0 0 2px #ffb3ad inset;
+  padding: 8px 12px;
+  text-align: center;
+  animation: aparecer-aviso .2s ease-out;
+}
+@keyframes aparecer-aviso { from { transform: translateY(-4px); opacity: 0; } }
+.celda--error::after { animation: parpadeo .35s 2; }
+
+.controles-nivel--recorrido { justify-content: flex-start; padding-top: 6px; }
+.controles-teclado { width: 100%; text-align: center; }
+.controles-teclado summary {
+  cursor: pointer;
+  font-family: var(--fuente-lectura);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--crema);
+  background: rgba(10, 8, 24, .6);
+  border: 2px solid #000;
+  padding: 4px 10px;
+  display: inline-block;
+}
+.controles-teclado[open] { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+/* --- Estado del servidor en el ingreso (USR-02) --- */
+.aviso-servidor {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: #fff6c9;
+  background: rgba(20, 30, 60, .85);
+  border: 2px solid #0a1022;
+  padding: 6px 10px;
+}
+.aviso-servidor--listo { color: #b9f5bf; background: rgba(20, 60, 30, .8); border-color: #0b2a12; padding: 4px 10px; }
+.aviso-servidor__barra { position: relative; height: 8px; background: #0a1022; overflow: hidden; }
+.aviso-servidor__barra span {
+  position: absolute; inset: 0 auto 0 0; width: 35%;
+  background: var(--oro);
+  animation: barra-carga 1.4s linear infinite;
+}
+@keyframes barra-carga { from { left: -35%; } to { left: 100%; } }
+
+@media (max-width: 760px) {
+  /* En celular, los botones del recorrido y el aviso van encima del tablero: se ven sin bajar. */
+  .controles-nivel--recorrido { order: -1; padding-top: 0; }
+  .burbuja { font-size: 15px; }
+  .modal-tablero__texto { font-size: 14px; }
+  .encabezado-nivel__instrucciones { font-size: 15px; }
+}
