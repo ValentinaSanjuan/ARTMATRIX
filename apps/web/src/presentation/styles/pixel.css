@@ -520,7 +520,7 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: rgba(14, 26, 43, 0.485);
+  background: rgba(10, 19, 32, 0.72);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border: 2px solid var(--noche-borde);
