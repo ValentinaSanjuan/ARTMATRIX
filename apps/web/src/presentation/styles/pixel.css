@@ -1029,7 +1029,6 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 .teoria__texto,
 .teoria__burbuja,
 .aviso-pixel,
-.aviso-paso,
 .aviso-servidor {
   font-family: var(--fuente-lectura);
   font-weight: 700;
@@ -1055,22 +1054,7 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 }
 .campo-pixel input::placeholder { color: #e9d2a6; opacity: 1; }
 
-/* --- Aviso inmediato en los recorridos (USR-01) --- */
-.aviso-paso {
-  margin: 0;
-  max-width: 100%;
-  font-size: 15px;
-  color: #fff;
-  background: rgba(150, 28, 24, .92);
-  border: 3px solid #5c120f;
-  box-shadow: 0 0 0 2px #ffb3ad inset;
-  padding: 8px 12px;
-  text-align: center;
-  animation: aparecer-aviso .2s ease-out;
-}
-@keyframes aparecer-aviso { from { transform: translateY(-4px); opacity: 0; } }
-.celda--error::after { animation: parpadeo .35s 2; }
-
+/* --- Controles de los recorridos (USR-01): botones visibles junto al tablero --- */
 .controles-nivel--recorrido { justify-content: flex-start; padding-top: 6px; }
 .controles-teclado { width: 100%; text-align: center; }
 .controles-teclado summary {
@@ -1108,7 +1092,7 @@ img { image-rendering: auto; user-select: none; -webkit-user-drag: none; }
 @keyframes barra-carga { from { left: -35%; } to { left: 100%; } }
 
 @media (max-width: 760px) {
-  /* En celular, los botones del recorrido y el aviso van encima del tablero: se ven sin bajar. */
+  /* En celular, los botones del recorrido van encima del tablero: se ven sin bajar. */
   .controles-nivel--recorrido { order: -1; padding-top: 0; }
   .burbuja { font-size: 15px; }
   .modal-tablero__texto { font-size: 14px; }

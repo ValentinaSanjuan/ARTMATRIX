@@ -218,7 +218,6 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
           if (r.correcto) {
             setCorrectas(pasos);
             setErrorCelda(null);
-            setAvisoPaso(null);
             setReubicar([]);
             setCuri({ mensaje: r.mensajeCuri, animo: 'celebra', tono: 'exito' });
             if (esCodigo) setConsola((c) => [...c, { tipo: 'ok', texto: `[${hora()}] ¡Solución correcta! +${r.puntos} puntos` }]);
@@ -253,28 +252,7 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
   };
 
   // ---- RECORRIDO (RF-07) ----
-  // Mejora de usabilidad (USR-01): cada celda se revisa apenas se toca; si no sigue el recorrido,
-  // se pinta de rojo y aparece un aviso junto al tablero, sin esperar a COMPROBAR.
-  const [avisoPaso, setAvisoPaso] = useState<string | null>(null);
-  const verificacion = useRef(0);
-  const verificarAvance = (pasos: Celda[]) => {
-    const id = ++verificacion.current;
-    if (pasos.length === 0) { setAvisoPaso(null); return; }
-    desafiosApi.verificarPaso(desafio.id, pasos).then((v) => {
-      if (id !== verificacion.current) return; // ya hay una marca más reciente
-      if (!v.correcto && v.indiceError !== null && v.indiceError < pasos.length) {
-        const mensaje = v.mensaje ?? 'Esa celda no sigue el recorrido.';
-        setErrorCelda(pasos[v.indiceError]);
-        setAvisoPaso(mensaje);
-        setCuri({ mensaje, animo: curiMalvado ? 'rasca' : 'pregunta', tono: 'error' });
-      } else {
-        setErrorCelda(null);
-        setAvisoPaso(null);
-        setCuri((c) => (c.tono === 'error' ? { mensaje: '¡Vas bien! Sigue con la siguiente celda.', animo: 'feliz', tono: 'normal' } : c));
-      }
-    }).catch(() => { /* sin conexión: se valida al COMPROBAR */ });
-  };
-
+  // Las celdas marcadas no indican si están bien o mal: el recorrido se valida al pulsar COMPROBAR.
   /** Marca una celda; si ya estaba marcada, la desmarca (deseleccionar). */
   const marcar = (c: Celda) => {
     if (bloqueado) return;
@@ -283,7 +261,6 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
     setResultado(null);
     const nuevo = recorrido.some((x) => mismaCelda(x, c)) ? recorrido.filter((x) => !mismaCelda(x, c)) : [...recorrido, c];
     setRecorrido(nuevo);
-    verificarAvance(nuevo);
   };
 
   const deshacer = () => {
@@ -291,7 +268,6 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
     setResultado(null);
     const nuevo = recorrido.slice(0, -1);
     setRecorrido(nuevo);
-    verificarAvance(nuevo);
   };
 
   const soltarSeleccion = () => setSeleccionada(false);
@@ -403,8 +379,6 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
     setPosMovil(movil ? { fila: movil.fila, columna: movil.columna } : null);
     setSeleccionada(false);
     setRecorrido([]);
-    verificacion.current++;
-    setAvisoPaso(null);
     setColocadas([]);
     setCorrectas([]);
     setErrorCelda(null);
@@ -482,12 +456,10 @@ function SalaDesafio({ idNivel, ordenNivel, nombreNivel, desafio, numero, total,
                 onTomarObra={() => setSeleccionada(true)}
               />
               {!esCodigo && desafio.tipo === 'RECORRIDO' && (
-                // Mejora de usabilidad (USR-01): los botones y el aviso quedan junto al tablero y visibles
+                // Mejora de usabilidad (USR-01): los botones quedan junto al tablero y visibles
                 // sin desplazarse; tocar la celda es la forma principal de marcar y las flechas son opcionales.
                 <aside className="controles-nivel controles-nivel--recorrido">
-                  {avisoPaso
-                    ? <p className="aviso-paso" role="alert">{avisoPaso}</p>
-                    : <p className="ayuda-controles">Toca las celdas en orden. Si tocas una celda marcada, se desmarca.</p>}
+                  <p className="ayuda-controles">Toca las celdas en orden. Si tocas una celda marcada, se desmarca.</p>
                   <div className="fila" style={{ gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
                     <BotonMadera icono="atras" etiqueta="DESHACER" disabled={bloqueado || recorrido.length === 0} onClick={deshacer} />
                     <BotonMadera icono="completado" etiqueta="COMPROBAR" disabled={bloqueado || recorrido.length === 0} onClick={() => enviar(recorrido)} />
